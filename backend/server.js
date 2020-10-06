@@ -1,4 +1,7 @@
 import path from "path";
+import http from "http";
+import https from "https";
+import fs from "fs";
 import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
@@ -44,9 +47,21 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(
-  PORT,
+let server;
+if (process.env.NODE_ENV !== "production") {
+  server = http.createServer(app);
+} else {
+  const options = {
+    key: fs.readFileSync(process.env.SSL_keyfile),
+    cert: fs.readFileSync(process.env.SSL_certfile),
+    ca: [fs.readFileSync(process.env.SSL_cafile)],
+  };
+
+  server = https.createServer(options, app);
+}
+
+server.listen(PORT, "0.0.0.0", function () {
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
-  )
-);
+  );
+});
