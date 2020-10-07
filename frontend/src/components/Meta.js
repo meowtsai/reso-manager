@@ -12,9 +12,10 @@ const Meta = ({ title, description, keywords }) => {
 };
 
 Meta.defaultProps = {
-  title: "Welcome To ProShop",
-  description: "We sell the best products for cheap",
-  keywords: "electronics, buy electronics, cheap electroincs",
+  title: "歡迎使用呼聲平台",
+  description:
+    "人人都是粉絲和專家,每個關鍵的聲音都值得被聆聽. 與我們聯繫,讓你被聽見!",
+  keywords: "KOL,網紅,遊戲,直播,行銷,活動",
 };
 
 export default Meta;
