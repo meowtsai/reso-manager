@@ -18,7 +18,7 @@ const H55TeamListScreen = ({ history }) => {
   const { success: successDelete } = userDelete;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
+    if (userInfo) {
       dispatch(listTeams());
     } else {
       history.push("/login");

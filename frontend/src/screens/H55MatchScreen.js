@@ -18,7 +18,7 @@ const H55MatchScreen = ({ history }) => {
   const { success: successDelete } = userDelete;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
+    if (userInfo) {
       dispatch(listMatch());
     } else {
       history.push("/login");

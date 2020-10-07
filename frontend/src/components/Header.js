@@ -26,7 +26,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              {userInfo && userInfo.isAdmin && (
+              {userInfo && (
                 <NavDropdown title="萬聖狂歡盃" id="h55menu">
                   <LinkContainer to="/h55event/teamlist">
                     <NavDropdown.Item>報名隊伍</NavDropdown.Item>
