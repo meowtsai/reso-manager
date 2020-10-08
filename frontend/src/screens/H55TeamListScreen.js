@@ -101,7 +101,13 @@ const H55TeamListScreen = ({ history }) => {
             <Col>
               <Paginate pages={pages} page={page} setPage={(p) => setPage(p)} />
             </Col>
-            <Col></Col>
+            <Col>
+              共 {teams.length} 筆資料, 顯示 {(page - 1) * pageSize + 1}~{" "}
+              {(page - 1) * pageSize + pageSize < teams.length
+                ? (page - 1) * pageSize + pageSize
+                : teams.length}
+              筆
+            </Col>
 
             <Col>
               <CSVLink
