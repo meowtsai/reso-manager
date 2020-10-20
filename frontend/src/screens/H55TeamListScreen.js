@@ -96,7 +96,16 @@ const H55TeamListScreen = ({ history }) => {
 
   const onSubmit = () => {
     //console.log("onSubmit", editTarget);
-    dispatch(updateMemberGameId(editTarget));
+    if (editTarget.game_id !== editTarget.new_game_id) {
+      dispatch(updateMemberGameId(editTarget));
+    } else {
+      setEditTarget({
+        mode: null,
+        team_id: null,
+        game_id: null,
+        new_game_id: null,
+      });
+    }
 
     //update db
   };
@@ -331,6 +340,18 @@ const H55TeamListScreen = ({ history }) => {
                                       style={{ cursor: "pointer" }}
                                       onClick={() =>
                                         onSubmit(team._id, member.game_id)
+                                      }
+                                    ></i>
+                                    <i
+                                      className="fa fa-times ml-2"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        setEditTarget({
+                                          mode: null,
+                                          team_id: null,
+                                          game_id: null,
+                                          new_game_id: null,
+                                        })
                                       }
                                     ></i>
                                   </Fragment>
