@@ -6,6 +6,12 @@ import {
   H55MATCH_LIST_REQUEST,
   H55MATCH_LIST_SUCCESS,
   H55MATCH_LIST_FAIL,
+  MEMBER_UPDATE_GAMEID_REQUEST,
+  MEMBER_UPDATE_GAMEID_REQUEST_SUCCESS,
+  MEMBER_UPDATE_GAMEID_REQUEST_FAIL,
+  TEAM_DELETE_REQUEST,
+  TEAM_DELETE_SUCCESS,
+  TEAM_DELETE_FAIL,
 } from "../constants/h55eventConstants";
 import { logout } from "./userActions";
 
@@ -78,6 +84,86 @@ export const listMatch = () => async (dispatch, getState) => {
     }
     dispatch({
       type: H55MATCH_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const updateMemberGameId = (newMemberGameId) => async (
+  dispatch,
+  getState
+) => {
+  console.log("updateMemberGameId", newMemberGameId);
+  try {
+    dispatch({
+      type: MEMBER_UPDATE_GAMEID_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/h55event/update_game_id`,
+      newMemberGameId,
+      config
+    );
+
+    dispatch({
+      type: MEMBER_UPDATE_GAMEID_REQUEST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: MEMBER_UPDATE_GAMEID_REQUEST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const deleteTeam = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: TEAM_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/h55event/${id}`, config);
+
+    dispatch({ type: TEAM_DELETE_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: TEAM_DELETE_FAIL,
       payload: message,
     });
   }

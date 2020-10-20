@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Table, Row, Col } from "react-bootstrap";
+import React, { Fragment, useEffect, useState } from "react";
+import { Table, Row, Col, Button } from "react-bootstrap";
+
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listTeams } from "../actions/h55eventActions";
+import {
+  listTeams,
+  updateMemberGameId,
+  deleteTeam,
+} from "../actions/h55eventActions";
 import Paginate from "../components/Paginate";
 import { CSVLink } from "react-csv";
 
@@ -11,6 +16,13 @@ const H55TeamListScreen = ({ history }) => {
   const pageSize = 5;
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
+  const [editTarget, setEditTarget] = useState({
+    mode: null,
+    team_id: null,
+    game_id: null,
+    new_game_id: null,
+  });
+
   const dispatch = useDispatch();
   const [flattened, setFlattened] = useState([]);
 
@@ -71,6 +83,37 @@ const H55TeamListScreen = ({ history }) => {
   // useEffect(() => {
 
   // }, [page])
+
+  const editMode = (mode, team_id, game_id) => {
+    //console.log("editMode", mode, team_id, game_id);
+    setEditTarget({
+      mode,
+      team_id,
+      game_id,
+      new_game_id: game_id,
+    });
+  };
+
+  const onSubmit = () => {
+    //console.log("onSubmit", editTarget);
+    dispatch(updateMemberGameId(editTarget));
+
+    //update db
+  };
+
+  const deleteHandler = (team_name, id) => {
+    if (
+      window.confirm(
+        `你確定要刪除${team_name} (辨識id: ${id.substring(
+          0,
+          6
+        )})這筆資料嗎, 沒有備分喔`
+      )
+    ) {
+      //console.log("delete ", id);
+      dispatch(deleteTeam(id));
+    }
+  };
 
   const fileName = `第五人格萬聖狂歡盃名單_${Date.now()}`;
   const csvHeaders = [
@@ -137,6 +180,8 @@ const H55TeamListScreen = ({ history }) => {
                   <tr key={team._id}>
                     <td>
                       <h4>{team.team}</h4>
+                      辨識id: {team._id.substring(0, 6)}
+                      <br />
                       隊長姓名: {team.captain_name}{" "}
                       {team.captain_gender === "1" ? (
                         <i className="fas fa-mars text-info"></i>
@@ -157,6 +202,15 @@ const H55TeamListScreen = ({ history }) => {
                       {team.captain_line_id}
                       <br />
                       填寫時間: {team.date.substring(0, 10)} <br />
+                      {userInfo && userInfo.isAdmin && (
+                        <Button
+                          variant="danger"
+                          className="btn-sm mt-3 ml-1"
+                          onClick={() => deleteHandler(team.team, team._id)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </Button>
+                      )}
                     </td>
                     <td>
                       <Table>
@@ -176,7 +230,58 @@ const H55TeamListScreen = ({ history }) => {
                             <td> 隊長 </td>
                             <td> {team.captain_name} </td>
                             <td> {team.captain_birthday.substring(0, 10)} </td>
-                            <td> {team.captain_game_id} </td>
+                            <td>
+                              {userInfo &&
+                              userInfo.isAdmin &&
+                              editTarget.mode === "captain" &&
+                              team._id === editTarget.team_id &&
+                              team.captain_game_id === editTarget.game_id ? (
+                                <Fragment>
+                                  <input
+                                    type="text"
+                                    defaultValue={editTarget.game_id}
+                                    onChange={(e) =>
+                                      setEditTarget({
+                                        ...editTarget,
+                                        new_game_id: e.target.value,
+                                      })
+                                    }
+                                    style={{
+                                      width: "70px",
+                                      marginRight: "3px",
+                                    }}
+                                  />
+                                  <i
+                                    className="fa fa-check"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                      onSubmit(team._id, team.captain_game_id)
+                                    }
+                                  ></i>
+                                </Fragment>
+                              ) : (
+                                <Fragment>
+                                  {team.captain_game_id}
+
+                                  {userInfo && userInfo.isAdmin && (
+                                    <i
+                                      className="far fa-edit"
+                                      style={{
+                                        cursor: "pointer",
+                                        marginLeft: "3px",
+                                      }}
+                                      onClick={() =>
+                                        editMode(
+                                          "captain",
+                                          team._id,
+                                          team.captain_game_id
+                                        )
+                                      }
+                                    ></i>
+                                  )}
+                                </Fragment>
+                              )}
+                            </td>
                             <td> {team.captain_line_id} </td>
                             <td>
                               {" "}
@@ -200,7 +305,57 @@ const H55TeamListScreen = ({ history }) => {
                               <td> 隊員{index + 1} </td>
                               <td> {member.name} </td>
                               <td> {member.birthday} </td>
-                              <td> {member.game_id} </td>
+                              <td>
+                                {userInfo &&
+                                userInfo.isAdmin &&
+                                editTarget.mode === "member" &&
+                                team._id === editTarget.team_id &&
+                                member.game_id === editTarget.game_id ? (
+                                  <Fragment>
+                                    <input
+                                      type="text"
+                                      defaultValue={editTarget.game_id}
+                                      onChange={(e) =>
+                                        setEditTarget({
+                                          ...editTarget,
+                                          new_game_id: e.target.value,
+                                        })
+                                      }
+                                      style={{
+                                        width: "70px",
+                                        marginRight: "3px",
+                                      }}
+                                    />
+                                    <i
+                                      className="fa fa-check"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        onSubmit(team._id, member.game_id)
+                                      }
+                                    ></i>
+                                  </Fragment>
+                                ) : (
+                                  <Fragment>
+                                    {member.game_id}
+                                    {userInfo && userInfo.isAdmin && (
+                                      <i
+                                        className="far fa-edit"
+                                        style={{
+                                          cursor: "pointer",
+                                          marginLeft: "3px",
+                                        }}
+                                        onClick={() =>
+                                          editMode(
+                                            "member",
+                                            team._id,
+                                            member.game_id
+                                          )
+                                        }
+                                      ></i>
+                                    )}
+                                  </Fragment>
+                                )}
+                              </td>
                               <td> {member.line_id} </td>
                               <td>
                                 {" "}
