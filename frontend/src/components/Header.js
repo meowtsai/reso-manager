@@ -39,7 +39,10 @@ const Header = () => {
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title="後台管理" id="manage">
                   <LinkContainer to="/manage/role">
-                    <NavDropdown.Item>角色管理</NavDropdown.Item>
+                    <NavDropdown.Item>角色職務管理</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/manage/userlist">
+                    <NavDropdown.Item>使用者管理</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
               )}

@@ -10,6 +10,8 @@ import H55TeamListScreen from "./screens/H55TeamListScreen";
 import H55MatchScreen from "./screens/H55MatchScreen";
 import RoleListScreen from "./screens/RoleListScreen";
 import RoleEditScreen from "./screens/RoleEditScreen";
+import UserListScreen from "./screens/UserListScreen";
+import UserEditScreen from "./screens/UserEditScreen";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
           <Route path="/manage/role" component={RoleListScreen} exact />
           <Route path="/manage/role/create" component={RoleEditScreen} />
           <Route path="/manage/role/edit/:id" component={RoleEditScreen} />
+          <Route path="/manage/userlist" component={UserListScreen} />
+          <Route path="/admin/user/:id/edit" component={UserEditScreen} />
         </Container>
       </main>
       <Footer />

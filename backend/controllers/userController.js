@@ -108,7 +108,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @route   GET /api/users
 // @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({})
+    .select("-password")
+    .populate({ path: "role", select: "roleDesc" });
   res.json(users);
 });
 
@@ -150,6 +152,7 @@ const updateUser = asyncHandler(async (req, res) => {
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
+    user.role = req.body.role || user.role;
     user.isAdmin = req.body.isAdmin;
 
     const updatedUser = await user.save();
@@ -158,6 +161,7 @@ const updateUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      role: updatedUser.role,
       isAdmin: updatedUser.isAdmin,
     });
   } else {
