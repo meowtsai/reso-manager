@@ -10,6 +10,7 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 
 import userRoutes from "./routes/userRoutes.js";
+import manageRoutes from "./routes/manageRoutes.js";
 import h55eventRoutes from "./routes/h55eventRoutes.js";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(express.json());
 
 app.use("/api/users", userRoutes);
 app.use("/api/h55event", h55eventRoutes);
+app.use("/api/manage", manageRoutes);
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));

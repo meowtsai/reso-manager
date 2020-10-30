@@ -12,6 +12,7 @@ import {
   userUpdateReducer,
 } from "./reducers/userReducers";
 import { teamListReducer, matchListReducer } from "./reducers/h55eventReducers";
+import { roleListReducer, roleEditReducer } from "./reducers/manageReducers";
 
 const reducer = combineReducers({
   teamList: teamListReducer,
@@ -23,6 +24,8 @@ const reducer = combineReducers({
   userList: userListReducer,
   userDelete: userDeleteReducer,
   userUpdate: userUpdateReducer,
+  roleList: roleListReducer,
+  roleEdit: roleEditReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

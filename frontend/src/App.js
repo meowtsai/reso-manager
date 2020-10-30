@@ -8,6 +8,8 @@ import LoginScreen from "./screens/LoginScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import H55TeamListScreen from "./screens/H55TeamListScreen";
 import H55MatchScreen from "./screens/H55MatchScreen";
+import RoleListScreen from "./screens/RoleListScreen";
+import RoleEditScreen from "./screens/RoleEditScreen";
 
 const App = () => {
   return (
@@ -20,6 +22,9 @@ const App = () => {
           <Route path="/" component={HomeScreen} exact />
           <Route path="/h55event/teamlist" component={H55TeamListScreen} />
           <Route path="/h55event/matchlist" component={H55MatchScreen} />
+          <Route path="/manage/role" component={RoleListScreen} exact />
+          <Route path="/manage/role/create" component={RoleEditScreen} />
+          <Route path="/manage/role/edit/:id" component={RoleEditScreen} />
         </Container>
       </main>
       <Footer />

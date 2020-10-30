@@ -36,6 +36,13 @@ const Header = () => {
                   </LinkContainer>
                 </NavDropdown>
               )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="後台管理" id="manage">
+                  <LinkContainer to="/manage/role">
+                    <NavDropdown.Item>角色管理</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">

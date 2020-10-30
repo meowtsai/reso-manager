@@ -15,7 +15,6 @@ import {
 } from "../constants/h55eventConstants";
 
 export const teamListReducer = (state = { teams: [] }, action) => {
-  console.log(state);
   switch (action.type) {
     case H55TEAM_LIST_REQUEST:
       return { loading: true };
