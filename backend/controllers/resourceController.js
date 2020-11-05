@@ -14,8 +14,8 @@ const getResources = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getResourcebyId = asyncHandler(async (req, res) => {
   const resource = await Resource.findById(req.params.id);
-  if (resources) {
-    res.json(resources);
+  if (resource) {
+    res.json(resource);
   } else {
     res.status(404);
     throw new Error("資源不存在");
@@ -28,7 +28,7 @@ const getResourcebyId = asyncHandler(async (req, res) => {
 const createResource = asyncHandler(async (req, res) => {
   const { resourceName, resourceDesc, operationList, parent } = req.body;
 
-  const resourceExists = await resource.findOne({ resource });
+  const resourceExists = await Resource.findOne({ resourceName });
   if (resourceExists) {
     res.status(400);
     throw new Error("新增失敗, 資源名稱已存在, 請改用其他名稱");

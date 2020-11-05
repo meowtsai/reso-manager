@@ -12,12 +12,11 @@ const resourceSchema = mongoose.Schema({
   },
   operationList: {
     type: String,
-    required: true,
     default: "",
   },
   parent: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Resource",
     default: "",
   },
 });

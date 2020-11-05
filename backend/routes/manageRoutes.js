@@ -17,6 +17,11 @@ import {
   deleteResource,
 } from "../controllers/resourceController.js";
 
+import {
+  getPermissionsByRoleId,
+  updateUserPermissions,
+} from "../controllers/permissionController.js";
+
 import { protect, admin } from "../middleware/authMiddleware.js";
 
 router.route("/role/list").get(protect, admin, getRoles);
@@ -27,7 +32,7 @@ router
   .get(protect, admin, getRolebyId)
   .put(protect, admin, updateRole);
 
-router.route("/resource/list").get(protect, admin, getResources);
+router.route("/resource").get(protect, admin, getResources);
 router.route("/resource").post(protect, admin, createResource);
 
 router
@@ -35,5 +40,10 @@ router
   .delete(protect, admin, deleteResource)
   .get(protect, admin, getResourcebyId)
   .put(protect, admin, updateResource);
+
+router
+  .route("/permission/:id")
+  .get(protect, admin, getPermissionsByRoleId)
+  .post(protect, admin, updateUserPermissions);
 
 export default router;

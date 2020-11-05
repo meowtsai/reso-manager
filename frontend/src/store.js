@@ -12,7 +12,16 @@ import {
   userUpdateReducer,
 } from "./reducers/userReducers";
 import { teamListReducer, matchListReducer } from "./reducers/h55eventReducers";
-import { roleListReducer, roleEditReducer } from "./reducers/manageReducers";
+import {
+  roleListReducer,
+  roleEditReducer,
+  resourceListReducer,
+  resourceDeleteReducer,
+  resourceDetailsReducer,
+  resourceUpdateReducer,
+  resourceCreateReducer,
+  rolePermissionsReducer,
+} from "./reducers/manageReducers";
 
 const reducer = combineReducers({
   teamList: teamListReducer,
@@ -26,6 +35,12 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
   roleList: roleListReducer,
   roleEdit: roleEditReducer,
+  resourceList: resourceListReducer,
+  resourceDelete: resourceDeleteReducer,
+  resourceDetails: resourceDetailsReducer,
+  resourceUpdate: resourceUpdateReducer,
+  resourceCreate: resourceCreateReducer,
+  rolePermissions: rolePermissionsReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

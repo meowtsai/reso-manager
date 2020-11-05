@@ -72,7 +72,7 @@ const UserEditScreen = ({ match, history }) => {
             <Form.Group controlId="name">
               <Form.Label>姓名</Form.Label>
               <Form.Control
-                type="姓名"
+                type="text"
                 placeholder="輸入姓名"
                 value={name}
                 onChange={(e) => setName(e.target.value)}

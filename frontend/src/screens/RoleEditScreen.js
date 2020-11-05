@@ -7,7 +7,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { editRole, getRole } from "../actions/manageActions";
 
 const RoleEditScreen = ({ match, history }) => {
-  console.log("match", match);
+  //console.log("match", match);
 
   const [roleName, setRoleName] = useState("");
   const [roleDesc, setRoleDesc] = useState("");

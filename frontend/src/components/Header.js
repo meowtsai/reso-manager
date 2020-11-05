@@ -44,6 +44,9 @@ const Header = () => {
                   <LinkContainer to="/manage/userlist">
                     <NavDropdown.Item>使用者管理</NavDropdown.Item>
                   </LinkContainer>
+                  <LinkContainer to="/manage/resourcelist">
+                    <NavDropdown.Item>權限功能設定</NavDropdown.Item>
+                  </LinkContainer>
                 </NavDropdown>
               )}
               {userInfo ? (

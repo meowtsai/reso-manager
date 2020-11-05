@@ -12,6 +12,10 @@ import RoleListScreen from "./screens/RoleListScreen";
 import RoleEditScreen from "./screens/RoleEditScreen";
 import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
+import ResourceListScreen from "./screens/ResourceListScreen";
+import ResourceEditScreen from "./screens/ResourceEditScreen";
+import ResourceCreateScreen from "./screens/ResourceCreateScreen";
+import PermissionAccountScreen from "./screens/PermissionAccountScreen";
 
 const App = () => {
   return (
@@ -28,7 +32,21 @@ const App = () => {
           <Route path="/manage/role/create" component={RoleEditScreen} />
           <Route path="/manage/role/edit/:id" component={RoleEditScreen} />
           <Route path="/manage/userlist" component={UserListScreen} />
-          <Route path="/admin/user/:id/edit" component={UserEditScreen} />
+          <Route path="/manage/user/:id/edit" component={UserEditScreen} />
+          <Route
+            path="/manage/permission/:id"
+            component={PermissionAccountScreen}
+          />
+
+          <Route path="/manage/resourcelist" component={ResourceListScreen} />
+          <Route
+            path="/manage/resource/:id/edit"
+            component={ResourceEditScreen}
+          />
+          <Route
+            path="/manage/resource/create"
+            component={ResourceCreateScreen}
+          />
         </Container>
       </main>
       <Footer />
