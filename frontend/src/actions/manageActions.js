@@ -92,6 +92,7 @@ export const updateResource = (resource) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
+    console.log("update resource", resource);
 
     const { data } = await axios.put(
       `/api/manage/resource/${resource._id}`,

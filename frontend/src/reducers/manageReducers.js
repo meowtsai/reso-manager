@@ -159,14 +159,25 @@ export const roleEditReducer = (state = { role: {} }, action) => {
   }
 };
 
-export const rolePermissionsReducer = (state = { permissions: {} }, action) => {
+export const rolePermissionsReducer = (
+  state = { permission: {}, permissions: [], resources: [], role: {} },
+  action
+) => {
   switch (action.type) {
     case PERMISSIONS_BY_ROLEID_REQUEST:
     case PERMISSIONS_CREATE_REQUEST:
       return { ...state, loading: true };
-    case PERMISSIONS_BY_ROLEID_SUCCESS:
+
     case PERMISSIONS_CREATE_SUCCESS:
-      return { loading: false, permissions: action.payload };
+      return { ...state, loading: false, permissions: action.payload };
+
+    case PERMISSIONS_BY_ROLEID_SUCCESS:
+      return {
+        loading: false,
+        permissions: action.payload.permissions,
+        resources: action.payload.resources,
+        role: action.payload.role,
+      };
 
     case PERMISSIONS_BY_ROLEID_FAIL:
     case PERMISSIONS_CREATE_FAIL:

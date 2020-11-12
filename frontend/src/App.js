@@ -16,6 +16,9 @@ import ResourceListScreen from "./screens/ResourceListScreen";
 import ResourceEditScreen from "./screens/ResourceEditScreen";
 import ResourceCreateScreen from "./screens/ResourceCreateScreen";
 import PermissionAccountScreen from "./screens/PermissionAccountScreen";
+import MentorsGameListScreen from "./screens/mentors/GameListScreen";
+import MentorListScreen from "./screens/mentors/MentorListScreen";
+import MentorEditScreen from "./screens/mentors/MentorEditScreen";
 
 const App = () => {
   return (
@@ -47,6 +50,10 @@ const App = () => {
             path="/manage/resource/create"
             component={ResourceCreateScreen}
           />
+
+          <Route path="/mentors/gamelist" component={MentorsGameListScreen} />
+          <Route path="/mentors/mentorlist" component={MentorListScreen} />
+          <Route path="/mentors/mentor/:id/edit" component={MentorEditScreen} />
         </Container>
       </main>
       <Footer />

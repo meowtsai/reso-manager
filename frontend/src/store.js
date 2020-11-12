@@ -22,6 +22,12 @@ import {
   resourceCreateReducer,
   rolePermissionsReducer,
 } from "./reducers/manageReducers";
+import {
+  gameListReducer,
+  mentorListReducer,
+  mentorDetailsReducer,
+  mentorUpdateReducer,
+} from "./reducers/mentorReducers";
 
 const reducer = combineReducers({
   teamList: teamListReducer,
@@ -41,6 +47,10 @@ const reducer = combineReducers({
   resourceUpdate: resourceUpdateReducer,
   resourceCreate: resourceCreateReducer,
   rolePermissions: rolePermissionsReducer,
+  gameList: gameListReducer,
+  mentorList: mentorListReducer,
+  mentorDetails: mentorDetailsReducer,
+  mentorUpdate: mentorUpdateReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

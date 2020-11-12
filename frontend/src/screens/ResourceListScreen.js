@@ -64,7 +64,7 @@ const ResourceListScreen = ({ history }) => {
               {resources.map((resource) => (
                 <tr key={`r-${resource._id}`}>
                   <td>
-                    <Link to={`/manage/resource/edit/${resource._id}`}>
+                    <Link to={`/manage/resource/${resource._id}/edit`}>
                       {resource.resourceName}
                       <small className="text-success">
                         {" "}

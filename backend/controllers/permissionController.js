@@ -1,13 +1,23 @@
 import asyncHandler from "express-async-handler";
 import Resource from "../models/resourceModel.js";
 import Permission from "../models/permissionModel.js";
+import Role from "../models/roleModel.js";
 
 // @desc    Get  permissions by user id
 // @route   GET /api/manage/permission/:id
 // @access  Private/Admin
 const getPermissionsByRoleId = asyncHandler(async (req, res) => {
-  const userPermissions = await Permission.find({ role: req.params.id });
-  res.json(userPermissions);
+  const resources = await Resource.find({});
+  const permissions = await Permission.find({
+    role: req.params.id,
+  });
+
+  const role = await Role.findById(req.params.id);
+
+  //.populate({ path: "role", select: ["roleName", "roleDesc"] })
+
+  console.log("permissions", permissions);
+  res.json({ resources, permissions, role });
 });
 
 // @desc    Update user permissions

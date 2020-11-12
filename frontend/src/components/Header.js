@@ -18,7 +18,7 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+      <Navbar bg="primary" variant="dark" expand="lg" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>呼聲管理</Navbar.Brand>
@@ -26,6 +26,23 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="第五Cosplay" id="cosplay">
+                  <LinkContainer to="/cosplay/list">
+                    <NavDropdown.Item>報名完成列表</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title="帶練課程" id="mentors">
+                  <LinkContainer to="/mentors/gamelist">
+                    <NavDropdown.Item>課程管理</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/mentors/mentorlist">
+                    <NavDropdown.Item>導師管理</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
               {userInfo && (
                 <NavDropdown title="萬聖狂歡盃" id="h55menu">
                   <LinkContainer to="/h55event/teamlist">

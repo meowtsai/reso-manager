@@ -1,22 +1,31 @@
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 import User from "../models/userModel.js";
-
+import Permission from "../models/permissionModel.js";
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate({
+    path: "role",
+    select: "roleDesc",
+  });
 
   if (user && (await user.matchPassword(password))) {
+    const permissions = await Permission.find({ role: user.role }).populate({
+      path: "resource",
+      select: "resourceName",
+    });
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
+      permissions,
     });
   } else {
     res.status(401);

@@ -12,6 +12,10 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import manageRoutes from "./routes/manageRoutes.js";
 import h55eventRoutes from "./routes/h55eventRoutes.js";
+import gameRoutes from "./routes/mentors/gameRoutes.js";
+import mentorRoutes from "./routes/mentors/mentorRoutes.js";
+import cosplayRoutes from "./routes/cosplayRoutes.js";
+import testRoutes from "./routes/testRoutes.js";
 
 dotenv.config();
 
@@ -28,6 +32,9 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/h55event", h55eventRoutes);
 app.use("/api/manage", manageRoutes);
+app.use("/api/mentors", gameRoutes, mentorRoutes);
+app.use("/api/cosplay", gameRoutes, cosplayRoutes);
+app.use("/api/test", testRoutes);
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));

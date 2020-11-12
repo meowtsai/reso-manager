@@ -7,8 +7,6 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import {
-  getRole,
-  listResources,
   getPermissionsByRoleId,
   updateUserPermissions,
 } from "../actions/manageActions";
@@ -23,28 +21,30 @@ const PermissionAccountScreen = ({ match, history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const roleEdit = useSelector((state) => state.roleEdit);
-  const { loading, role, error, success } = roleEdit;
+  // const roleEdit = useSelector((state) => state.roleEdit);
+  // const { loading, role, error, success } = roleEdit;
 
-  const resourceList = useSelector((state) => state.resourceList);
-  const { resources } = resourceList;
+  // const resourceList = useSelector((state) => state.resourceList);
+  // const { resources } = resourceList;
 
   const rolePermissionsState = useSelector((state) => state.rolePermissions);
   const {
     permissions: rolePermissions,
-    loading: rolePermissionsLoading,
+    resources,
+    role,
+    loading,
   } = rolePermissionsState;
 
-  console.log("rolePermissions", rolePermissions);
+  //console.log("rolePermissions", rolePermissions);
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     } else {
       if (!role || !role.roleName || role._id !== match.params.id) {
-        if (!loading && !rolePermissionsLoading) {
-          dispatch(listResources());
-          dispatch(getRole(roleId));
+        if (!loading) {
+          //dispatch(listResources());
+          //dispatch(getRole(roleId));
           dispatch(getPermissionsByRoleId(roleId));
         }
       }
@@ -108,11 +108,11 @@ const PermissionAccountScreen = ({ match, history }) => {
   };
 
   function checkPermission(rolePermissions, id, op) {
-    console.log("checkPermission called", id, op);
+    //console.log("checkPermission called", id, op);
     const perm = rolePermissions.filter((r) => r.resource === id);
     if (perm.length > 0) {
-      console.log(perm);
-      console.log(op);
+      // console.log(perm);
+      // console.log(op);
 
       if (perm[0].operations.indexOf(op) > -1) {
         return true;
@@ -126,7 +126,7 @@ const PermissionAccountScreen = ({ match, history }) => {
       <Link to="/manage/role" className="btn btn-light my-3">
         回列表
       </Link>
-      {loading || rolePermissionsLoading ? (
+      {loading ? (
         <Loader />
       ) : (
         <FormContainer>
@@ -147,11 +147,29 @@ const PermissionAccountScreen = ({ match, history }) => {
                       <tr>
                         <td>
                           {ParentResource.resourceName}
-                          <small className="text-sucess">
+                          <small className="text-success ml-2">
                             {ParentResource.resourceDesc}
                           </small>
                         </td>
-                        <td>{ParentResource.operationList}</td>
+
+                        <td>
+                          {ParentResource.operationList.split(",").map((op) => (
+                            <Form.Check
+                              inline
+                              type="checkbox"
+                              key={`${ParentResource._id}:${op}`}
+                              id={`${ParentResource._id}:${op}`}
+                              name={`${ParentResource._id}:${op}`}
+                              label={`${op}`}
+                              onChange={handleSingleCheck}
+                              defaultChecked={checkPermission(
+                                rolePermissions,
+                                ParentResource._id,
+                                op
+                              )}
+                            />
+                          ))}
+                        </td>
                       </tr>
 
                       {resources
@@ -160,7 +178,7 @@ const PermissionAccountScreen = ({ match, history }) => {
                           <tr key={childResource._id}>
                             <td>
                               {childResource.resourceName}
-                              <small className="text-sucess">
+                              <small className="text-success ml-2">
                                 {childResource.resourceDesc}
                               </small>{" "}
                             </td>

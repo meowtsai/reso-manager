@@ -57,7 +57,8 @@ const ResourceEditScreen = ({ match, history }) => {
     e.preventDefault();
     dispatch(
       updateResource({
-        _id: resourceName,
+        _id: resource._id,
+        resourceName,
         resourceDesc,
         operationList,
         parent,

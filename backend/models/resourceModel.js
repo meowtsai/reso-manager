@@ -15,8 +15,7 @@ const resourceSchema = mongoose.Schema({
     default: "",
   },
   parent: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Resource",
+    type: String,
     default: "",
   },
 });
