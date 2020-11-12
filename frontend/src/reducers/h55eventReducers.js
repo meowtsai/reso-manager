@@ -12,14 +12,21 @@ import {
   TEAM_DELETE_REQUEST,
   TEAM_DELETE_SUCCESS,
   TEAM_DELETE_FAIL,
+  H55COSPLAY_LIST_REQUEST,
+  H55COSPLAY_LIST_SUCCESS,
+  H55COSPLAY_LIST_FAIL,
 } from "../constants/h55eventConstants";
 
-export const teamListReducer = (state = { teams: [] }, action) => {
+export const teamListReducer = (
+  state = { teams: [], cosplays: [] },
+  action
+) => {
   switch (action.type) {
     case H55TEAM_LIST_REQUEST:
       return { loading: true };
     case H55TEAM_LIST_SUCCESS:
       return { loading: false, teams: action.payload };
+
     case H55TEAM_LIST_FAIL:
       return { loading: false, error: action.payload };
     case H55TEAM_LIST_RESET:
@@ -59,6 +66,19 @@ export const matchListReducer = (state = { matches: [] }, action) => {
       return { loading: false, matches: action.payload };
     case H55MATCH_LIST_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const cosplayListReducer = (state = { cosplays: [] }, action) => {
+  switch (action.type) {
+    case H55COSPLAY_LIST_REQUEST:
+      return { loading: true };
+    case H55COSPLAY_LIST_SUCCESS:
+      return { loading: false, cosplays: action.payload };
+    case H55COSPLAY_LIST_FAIL:
+
     default:
       return state;
   }

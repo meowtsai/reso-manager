@@ -28,8 +28,8 @@ const Header = () => {
             <Nav className="ml-auto">
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title="第五Cosplay" id="cosplay">
-                  <LinkContainer to="/cosplay/list">
-                    <NavDropdown.Item>報名完成列表</NavDropdown.Item>
+                  <LinkContainer to="/h55event/cosplaylist">
+                    <NavDropdown.Item>參賽者列表</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
               )}

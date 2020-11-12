@@ -56,3 +56,6 @@ h2 {
 .text-purple {
   color: var(--purple);
 }
+.font-13 {
+  font-size: 13px !important;
+}

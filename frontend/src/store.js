@@ -11,7 +11,11 @@ import {
   userDeleteReducer,
   userUpdateReducer,
 } from "./reducers/userReducers";
-import { teamListReducer, matchListReducer } from "./reducers/h55eventReducers";
+import {
+  teamListReducer,
+  matchListReducer,
+  cosplayListReducer,
+} from "./reducers/h55eventReducers";
 import {
   roleListReducer,
   roleEditReducer,
@@ -51,6 +55,7 @@ const reducer = combineReducers({
   mentorList: mentorListReducer,
   mentorDetails: mentorDetailsReducer,
   mentorUpdate: mentorUpdateReducer,
+  cosplayList: cosplayListReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
