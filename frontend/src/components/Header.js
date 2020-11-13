@@ -7,6 +7,7 @@ import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { logout } from "../actions/userActions";
 
 const Header = () => {
+  console.log("header");
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -26,13 +27,19 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              {userInfo && userInfo.isAdmin && (
-                <NavDropdown title="第五Cosplay" id="cosplay">
-                  <LinkContainer to="/h55event/cosplaylist">
-                    <NavDropdown.Item>參賽者列表</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-              )}
+              {userInfo &&
+                (userInfo.isAdmin ||
+                  checkPermissions(
+                    userInfo.permissions,
+                    "cosplay",
+                    "read"
+                  )) && (
+                  <NavDropdown title="第五Cosplay" id="cosplay">
+                    <LinkContainer to="/h55event/cosplaylist">
+                      <NavDropdown.Item>參賽者列表</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
+                )}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title="帶練課程" id="mentors">
                   <LinkContainer to="/mentors/gamelist">
@@ -91,3 +98,27 @@ const Header = () => {
 };
 
 export default Header;
+
+// [
+//   {
+//     "operations": "read,modify,delete",
+//     "_id": "5fadf4ab69337922834ee7cb",
+//     "role": "5fadf1e369337922834ee7c6",
+//     "resource": {
+//       "_id": "5fadf48869337922834ee7ca",
+//       "resourceName": "cosplay"
+//     },
+//     "__v": 0
+//   }
+// ]
+const checkPermissions = (permissions, resource, op) => {
+  //return true;
+  const filteredPerm = permissions.filter(
+    (perm) => perm.resource.resourceName === resource
+  )[0];
+  console.log("checkPermissions", filteredPerm);
+  if (filteredPerm && filteredPerm.operations.indexOf(op) > -1) {
+    return true;
+  }
+  return false;
+};
