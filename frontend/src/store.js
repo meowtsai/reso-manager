@@ -31,6 +31,7 @@ import {
   mentorListReducer,
   mentorDetailsReducer,
   mentorUpdateReducer,
+  registerListReducer,
 } from "./reducers/mentorReducers";
 
 const reducer = combineReducers({
@@ -52,6 +53,8 @@ const reducer = combineReducers({
   resourceCreate: resourceCreateReducer,
   rolePermissions: rolePermissionsReducer,
   gameList: gameListReducer,
+  registerList: registerListReducer,
+
   mentorList: mentorListReducer,
   mentorDetails: mentorDetailsReducer,
   mentorUpdate: mentorUpdateReducer,

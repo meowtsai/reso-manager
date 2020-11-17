@@ -12,8 +12,92 @@ import {
   MENTOR_UPDATE_REQUEST,
   MENTOR_UPDATE_SUCCESS,
   MENTOR_UPDATE_FAIL,
+  COURSE_REGISTER_LIST_REQUEST,
+  COURSE_REGISTER_LIST_SUCCESS,
+  COURSE_REGISTER_LIST_FAIL,
+  REGISTER_UPDATE_REQUEST,
+  REGISTER_UPDATE_SUCCESS,
+  REGISTER_UPDATE_FAIL,
 } from "../constants/mentorsConstants";
 import { logout } from "./userActions";
+
+export const updateRegister = (register) => async (dispatch, getState) => {
+  //console.log("updateRegister", register);
+  try {
+    dispatch({
+      type: REGISTER_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      `/api/mentors/register/${register._id}`,
+      register,
+      config
+    );
+
+    dispatch({ type: REGISTER_UPDATE_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: REGISTER_UPDATE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const listRegisters = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: COURSE_REGISTER_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/mentors/registers`, config);
+
+    dispatch({
+      type: COURSE_REGISTER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: COURSE_REGISTER_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
 export const listGames = () => async (dispatch, getState) => {
   try {
     dispatch({

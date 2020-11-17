@@ -19,6 +19,8 @@ import PermissionAccountScreen from "./screens/PermissionAccountScreen";
 import MentorsGameListScreen from "./screens/mentors/GameListScreen";
 import MentorListScreen from "./screens/mentors/MentorListScreen";
 import MentorEditScreen from "./screens/mentors/MentorEditScreen";
+import RecordListScreen from "./screens/mentors/RecordListScreen";
+
 import H55CosplayListScreen from "./screens/H55CosplayListScreen";
 
 const App = () => {
@@ -59,6 +61,7 @@ const App = () => {
           <Route path="/mentors/gamelist" component={MentorsGameListScreen} />
           <Route path="/mentors/mentorlist" component={MentorListScreen} />
           <Route path="/mentors/mentor/:id/edit" component={MentorEditScreen} />
+          <Route path="/mentors/recordlist" component={RecordListScreen} />
         </Container>
       </main>
       <Footer />

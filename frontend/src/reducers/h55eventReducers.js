@@ -78,7 +78,7 @@ export const cosplayListReducer = (state = { cosplays: [] }, action) => {
     case H55COSPLAY_LIST_SUCCESS:
       return { loading: false, cosplays: action.payload };
     case H55COSPLAY_LIST_FAIL:
-
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

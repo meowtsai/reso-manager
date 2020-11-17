@@ -40,16 +40,25 @@ const Header = () => {
                     </LinkContainer>
                   </NavDropdown>
                 )}
-              {userInfo && userInfo.isAdmin && (
-                <NavDropdown title="帶練課程" id="mentors">
-                  <LinkContainer to="/mentors/gamelist">
-                    <NavDropdown.Item>課程管理</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/mentors/mentorlist">
-                    <NavDropdown.Item>導師管理</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-              )}
+              {userInfo &&
+                (userInfo.isAdmin ||
+                  checkPermissions(
+                    userInfo.permissions,
+                    "mentors",
+                    "read"
+                  )) && (
+                  <NavDropdown title="帶練課程" id="mentors">
+                    <LinkContainer to="/mentors/recordlist">
+                      <NavDropdown.Item>預約管理</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/mentors/gamelist">
+                      <NavDropdown.Item>課程管理</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/mentors/mentorlist">
+                      <NavDropdown.Item>導師管理</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
+                )}
               {userInfo && (
                 <NavDropdown title="萬聖狂歡盃" id="h55menu">
                   <LinkContainer to="/h55event/teamlist">
