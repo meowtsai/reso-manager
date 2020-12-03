@@ -22,6 +22,7 @@ import MentorEditScreen from "./screens/mentors/MentorEditScreen";
 import RecordListScreen from "./screens/mentors/RecordListScreen";
 
 import H55CosplayListScreen from "./screens/H55CosplayListScreen";
+import H55CosplayReportScreen from "./screens/H55CosplayReportScreen";
 
 const App = () => {
   return (
@@ -38,6 +39,11 @@ const App = () => {
             path="/h55event/cosplaylist"
             component={H55CosplayListScreen}
           />
+          <Route
+            path="/h55event/cosplayreport"
+            component={H55CosplayReportScreen}
+          />
+
           <Route path="/manage/role" component={RoleListScreen} exact />
           <Route path="/manage/role/create" component={RoleEditScreen} />
           <Route path="/manage/role/edit/:id" component={RoleEditScreen} />

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Card } from "react-bootstrap";
+import { Table, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { DateTime } from "luxon";
 import { listCosplays } from "../actions/h55eventActions";
 import Loader from "../components/Loader";
@@ -9,17 +9,19 @@ import Message from "../components/Message";
 const imgContainerStyle = {
   display: "flex",
   position: "relative",
-
-  height: "187px",
+  width: "352px",
+  height: "230px",
   border: "1px solid rgba(123, 233, 255, 0.2)",
-  maxWidth: "100%",
 };
 
 const H55CosplayListScreen = ({ history }) => {
   const dispatch = useDispatch();
+  const [searchKeyword, setSearchKeyWord] = useState("");
+
   const cosplayList = useSelector((state) => state.cosplayList);
   const { loading, error, cosplays } = cosplayList;
 
+  const [renderList, setRenderList] = useState([]);
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -31,6 +33,31 @@ const H55CosplayListScreen = ({ history }) => {
     }
   }, [dispatch, history, userInfo]);
 
+  useEffect(() => {
+    if (Array.isArray(cosplays) && cosplays.length > 0) {
+      setRenderList(cosplays);
+    }
+  }, [cosplays]);
+
+  const search = () => {
+    // const filteredarray = cosplays.filter(
+    //   (item) =>
+    //     item.nickname.indexOf(searchKeyword) > -1 ||
+    //     item.work_subject.indexOf(searchKeyword) > -1
+    // );
+    // console.log("filteredarray", filteredarray);
+
+    setRenderList(
+      searchKeyword === ""
+        ? cosplays
+        : cosplays.filter(
+            (item) =>
+              item.nickname.indexOf(searchKeyword) > -1 ||
+              item.work_subject.indexOf(searchKeyword) > -1
+          )
+    );
+  };
+
   return (
     <>
       <h1>第五人格Cos大賽參賽者列表</h1>
@@ -40,8 +67,24 @@ const H55CosplayListScreen = ({ history }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <Row>
-          <Col xs={9}>
-            {cosplays.map((item) => (
+          <Col xs={12}>
+            <Form className="mb-3">
+              <Form.Row className="align-items-center">
+                <Col xs="auto">
+                  <Form.Control
+                    placeholder="搜尋"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyWord(e.target.value)}
+                  />
+                </Col>
+                <Col xs="auto">
+                  <Button type="button" onClick={search}>
+                    OK
+                  </Button>
+                </Col>
+              </Form.Row>
+            </Form>
+            {renderList.map((item) => (
               <Row key={item._id} className="mt-2">
                 <Col xs={5}>
                   <CoserDisplay item={item} />
@@ -53,10 +96,6 @@ const H55CosplayListScreen = ({ history }) => {
               </Row>
             ))}
           </Col>
-          <Col>
-            <h5>每日統計報表</h5>
-            <DialyStatistics list={cosplays} />
-          </Col>
         </Row>
       )}
     </>
@@ -64,54 +103,6 @@ const H55CosplayListScreen = ({ history }) => {
 };
 
 export default H55CosplayListScreen;
-
-const DialyStatistics = ({ list }) => {
-  const alldate = [
-    ...new Set(
-      list.map((item) => DateTime.fromISO(item.createdAt).toLocaleString())
-    ),
-  ];
-
-  const finalData = alldate.map((d) => {
-    const dailyItems = list.filter(
-      (item) => DateTime.fromISO(item.createdAt).toLocaleString() === d
-    );
-    const count1 = dailyItems.reduce(
-      (prev, curr) => {
-        // console.log(prev);
-        // console.log(curr);
-        return curr.category === "CG"
-          ? { cg: prev.cg + 1, pg: prev.pg }
-          : { pg: prev.pg + 1, cg: prev.cg };
-      },
-      { cg: 0, pg: 0 }
-    );
-    return { d, ...count1 };
-  });
-  console.log("finalData", finalData);
-
-  //const statData = list.map((item) => item.category === "PG");
-  return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th scope="col">日期</th>
-          <th scope="col">專業組</th>
-          <th scope="col">創意組</th>
-        </tr>
-      </thead>
-      <tbody>
-        {finalData.map((data) => (
-          <tr>
-            <td>{data.d}</td>
-            <td>{data.pg}</td>
-            <td>{data.cg}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
-};
 
 const CoserDisplay = ({ item }) => {
   return (
@@ -168,17 +159,30 @@ const WorkDisplay = ({ item }) => {
       </div>
       <Card.Body>
         <Card.Title>{item.work_subject}</Card.Title>
-        <Card.Text className="font-13" style={{ whiteSpace: "pre" }}>
+        <Card.Text className="font-13" style={{ whiteSpace: "pre-wrap" }}>
           {item.work_desc}
         </Card.Text>
         <i className="far fa-images"></i>作品:
         {item.imgs.map((img, index) => (
-          <Card.Link key={`img-${item._id}_${index}`} href={img}>
+          <Card.Link
+            target="_blank"
+            key={`img-${item._id}_${index}`}
+            href={img}
+          >
             {" "}
             {index + 1}
           </Card.Link>
         ))}
       </Card.Body>
+      <Card.Footer className="text-muted">
+        <i className="fas fa-globe"></i>網站:
+        <Card.Link
+          target="_blank"
+          href={`https://www.resound.global/cosplay/showcase/${item._id}`}
+        >
+          站上觀看
+        </Card.Link>
+      </Card.Footer>
     </Card>
   );
 };

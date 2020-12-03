@@ -35,6 +35,9 @@ const Header = () => {
                     "read"
                   )) && (
                   <NavDropdown title="第五Cosplay" id="cosplay">
+                    <LinkContainer to="/h55event/cosplayreport">
+                      <NavDropdown.Item>統計報表</NavDropdown.Item>
+                    </LinkContainer>
                     <LinkContainer to="/h55event/cosplaylist">
                       <NavDropdown.Item>參賽者列表</NavDropdown.Item>
                     </LinkContainer>
