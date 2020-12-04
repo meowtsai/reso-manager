@@ -71,10 +71,20 @@ const DialyStatistics = ({ list }) => {
   const total = list.reduce(
     (prev, curr) => {
       return curr.category === "CG"
-        ? { cg: prev.cg + 1, pg: prev.pg }
-        : { pg: prev.pg + 1, cg: prev.cg };
+        ? {
+            cg: prev.cg + 1,
+            pg: prev.pg,
+            cgv: curr.status === "VERIFIED" ? prev.cgv + 1 : prev.cgv,
+            pgv: prev.pgv,
+          }
+        : {
+            pg: prev.pg + 1,
+            cg: prev.cg,
+            pgv: curr.status === "VERIFIED" ? prev.pgv + 1 : prev.pgv,
+            cgv: prev.cgv,
+          };
     },
-    { cg: 0, pg: 0 }
+    { cg: 0, pg: 0, cgv: 0, pgv: 0 }
   );
 
   console.log("total", total);
@@ -103,6 +113,11 @@ const DialyStatistics = ({ list }) => {
           <td>總計</td>
           <td>{total.pg}</td>
           <td>{total.cg}</td>
+        </tr>
+        <tr>
+          <td>審核通過</td>
+          <td>{total.pgv}</td>
+          <td>{total.cgv}</td>
         </tr>
       </tfoot>
     </Table>

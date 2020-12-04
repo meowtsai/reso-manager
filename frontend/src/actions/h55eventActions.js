@@ -15,8 +15,53 @@ import {
   H55COSPLAY_LIST_REQUEST,
   H55COSPLAY_LIST_SUCCESS,
   H55COSPLAY_LIST_FAIL,
+  COSER_UPDATE_REQUEST,
+  COSER_UPDATE_SUCCESS,
+  COSER_UPDATE_FAIL,
 } from "../constants/h55eventConstants";
 import { logout } from "./userActions";
+
+export const updateApplyById = (apply) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: COSER_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/cosplay/${apply._id}`,
+      { apply },
+      config
+    );
+
+    dispatch({
+      type: COSER_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: COSER_UPDATE_FAIL,
+      payload: message,
+    });
+  }
+};
 
 export const listCosplays = () => async (dispatch, getState) => {
   try {

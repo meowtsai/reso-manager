@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Card, Form, Button } from "react-bootstrap";
+import {
+  Table,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Badge,
+  Spinner,
+} from "react-bootstrap";
 import { DateTime } from "luxon";
-import { listCosplays } from "../actions/h55eventActions";
+import { listCosplays, updateApplyById } from "../actions/h55eventActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
@@ -13,13 +22,21 @@ const imgContainerStyle = {
   height: "230px",
   border: "1px solid rgba(123, 233, 255, 0.2)",
 };
+//enum: ["SUBMITTED", "VERIFIED", "DISQUALIFIED"],
+const statusList = {
+  SUBMITTED: { text: "待審核", color: "secondary" },
+  VERIFIED: { text: "已通過", color: "success" },
+  DISQUALIFIED: { text: "未通過", color: "danger" },
+};
 
 const H55CosplayListScreen = ({ history }) => {
   const dispatch = useDispatch();
   const [searchKeyword, setSearchKeyWord] = useState("");
+  const [coserStatus, setCoserStatus] = useState("");
+  const [category, setCategory] = useState("");
 
   const cosplayList = useSelector((state) => state.cosplayList);
-  const { loading, error, cosplays } = cosplayList;
+  const { loading, error, cosplays, updateLoading } = cosplayList;
 
   const [renderList, setRenderList] = useState([]);
   const userLogin = useSelector((state) => state.userLogin);
@@ -40,22 +57,37 @@ const H55CosplayListScreen = ({ history }) => {
   }, [cosplays]);
 
   const search = () => {
-    // const filteredarray = cosplays.filter(
-    //   (item) =>
-    //     item.nickname.indexOf(searchKeyword) > -1 ||
-    //     item.work_subject.indexOf(searchKeyword) > -1
-    // );
+    let filteredarray = cosplays;
+    if (searchKeyword !== "") {
+      filteredarray = filteredarray.filter(
+        (item) =>
+          item.nickname.indexOf(searchKeyword) > -1 ||
+          item.work_subject.indexOf(searchKeyword) > -1 ||
+          item.coser_name.indexOf(searchKeyword) > -1 ||
+          item.coser_email.indexOf(searchKeyword) > -1 ||
+          item.coser_phone.indexOf(searchKeyword) > -1
+      );
+    }
+    if (coserStatus !== "") {
+      filteredarray = filteredarray.filter(
+        (item) => item.status === coserStatus
+      );
+    }
+
+    if (category !== "") {
+      filteredarray = filteredarray.filter(
+        (item) => item.category === category
+      );
+    }
+
     // console.log("filteredarray", filteredarray);
 
-    setRenderList(
-      searchKeyword === ""
-        ? cosplays
-        : cosplays.filter(
-            (item) =>
-              item.nickname.indexOf(searchKeyword) > -1 ||
-              item.work_subject.indexOf(searchKeyword) > -1
-          )
-    );
+    setRenderList(filteredarray);
+  };
+
+  const onStatusChange = ({ _id, status }) => {
+    console.log("onStatusChange", { _id, status });
+    dispatch(updateApplyById({ _id, status }));
   };
 
   return (
@@ -72,7 +104,30 @@ const H55CosplayListScreen = ({ history }) => {
               <Form.Row className="align-items-center">
                 <Col xs="auto">
                   <Form.Control
-                    placeholder="搜尋"
+                    as="select"
+                    custom
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value="">所有</option>
+                    <option value="PG">專業組</option>
+                    <option value="CG">創意組</option>
+                  </Form.Control>
+                </Col>
+                <Col xs="auto">
+                  <Form.Control
+                    as="select"
+                    custom
+                    onChange={(e) => setCoserStatus(e.target.value)}
+                  >
+                    <option value="">所有</option>
+                    {Object.keys(statusList).map((skey) => (
+                      <option value={skey}>{statusList[skey].text}</option>
+                    ))}
+                  </Form.Control>
+                </Col>
+                <Col xs="auto">
+                  <Form.Control
+                    placeholder="關鍵字搜尋"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyWord(e.target.value)}
                   />
@@ -82,12 +137,19 @@ const H55CosplayListScreen = ({ history }) => {
                     OK
                   </Button>
                 </Col>
+                <Col xs="auto">共{renderList.length}筆</Col>
               </Form.Row>
             </Form>
             {renderList.map((item) => (
               <Row key={item._id} className="mt-2">
                 <Col xs={5}>
-                  <CoserDisplay item={item} />
+                  <CoserDisplay
+                    item={item}
+                    verifyAction={({ _id, status }) =>
+                      onStatusChange({ _id, status })
+                    }
+                    updateLoading={updateLoading}
+                  />
                 </Col>
                 <Col>
                   <WorkDisplay item={item} />
@@ -104,7 +166,7 @@ const H55CosplayListScreen = ({ history }) => {
 
 export default H55CosplayListScreen;
 
-const CoserDisplay = ({ item }) => {
+const CoserDisplay = ({ item, verifyAction, updateLoading }) => {
   return (
     <div className="text-left mt-3">
       <p className="text-dark">
@@ -138,13 +200,62 @@ const CoserDisplay = ({ item }) => {
           )}
         </span>
       </p>
+
+      <p className="text-dark">
+        <strong>狀態</strong>
+
+        <Badge variant={statusList[item.status].color} className="ml-2">
+          {statusList[item.status].text}
+        </Badge>
+      </p>
+      <hr />
+      {updateLoading === true ? (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      ) : item.status === "SUBMITTED" ? (
+        <p className="text-dark">
+          <strong>資格審核</strong>
+          <Button
+            variant="success"
+            className="ml-2"
+            onClick={() => verifyAction({ _id: item._id, status: "VERIFIED" })}
+          >
+            {" "}
+            <i className="fas fa-check"></i> 通過
+          </Button>
+          <Button
+            variant="danger"
+            className="ml-2"
+            onClick={() =>
+              verifyAction({ _id: item._id, status: "DISQUALIFIED" })
+            }
+          >
+            {" "}
+            <i className="fas fa-times"></i>未通過
+          </Button>
+        </p>
+      ) : (
+        <p className="text-dark">
+          <strong>資格</strong>
+          <Button
+            variant="warning"
+            className="ml-2"
+            onClick={() => verifyAction({ _id: item._id, status: "SUBMITTED" })}
+          >
+            {" "}
+            <i className="fas fa-undo"></i>
+            重置為待審核狀態
+          </Button>
+        </p>
+      )}
     </div>
   );
 };
 
 const WorkDisplay = ({ item }) => {
   return (
-    <Card border="primary" className="mb-1">
+    <Card border={statusList[item.status].color} className="mb-1">
       <Card.Header> {item.nickname} </Card.Header>
       <div style={imgContainerStyle}>
         <div style={{ display: "flex", minWidth: "0px", overflow: "hidden" }}>
@@ -180,7 +291,7 @@ const WorkDisplay = ({ item }) => {
           target="_blank"
           href={`https://www.resound.global/cosplay/showcase/${item._id}`}
         >
-          站上觀看
+          前往觀看
         </Card.Link>
       </Card.Footer>
     </Card>

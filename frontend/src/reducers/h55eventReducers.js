@@ -15,6 +15,9 @@ import {
   H55COSPLAY_LIST_REQUEST,
   H55COSPLAY_LIST_SUCCESS,
   H55COSPLAY_LIST_FAIL,
+  COSER_UPDATE_REQUEST,
+  COSER_UPDATE_SUCCESS,
+  COSER_UPDATE_FAIL,
 } from "../constants/h55eventConstants";
 
 export const teamListReducer = (
@@ -71,14 +74,35 @@ export const matchListReducer = (state = { matches: [] }, action) => {
   }
 };
 
-export const cosplayListReducer = (state = { cosplays: [] }, action) => {
+export const cosplayListReducer = (
+  state = { cosplays: [], updateLoading: false },
+  action
+) => {
   switch (action.type) {
     case H55COSPLAY_LIST_REQUEST:
-      return { loading: true };
+      return { ...state, loading: true };
+    case COSER_UPDATE_REQUEST:
+      return { ...state, updateLoading: true };
     case H55COSPLAY_LIST_SUCCESS:
-      return { loading: false, cosplays: action.payload };
+      return { error: null, loading: false, cosplays: action.payload };
+    case COSER_UPDATE_SUCCESS:
+      return {
+        error: null,
+        updateLoading: false,
+        cosplays: state.cosplays.map((coser) =>
+          coser._id.toString() === action.payload._id.toString()
+            ? { ...coser, ...action.payload }
+            : coser
+        ),
+      };
     case H55COSPLAY_LIST_FAIL:
-      return { loading: false, error: action.payload };
+    case COSER_UPDATE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        updateLoading: false,
+      };
     default:
       return state;
   }
