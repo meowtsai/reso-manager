@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Table,
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Badge,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Badge, Spinner } from "react-bootstrap";
 import { DateTime } from "luxon";
 import { listCosplays, updateApplyById } from "../actions/h55eventActions";
 import Loader from "../components/Loader";
@@ -259,7 +250,7 @@ const WorkDisplay = ({ item }) => {
       <Card.Header> {item.nickname} </Card.Header>
       <div style={imgContainerStyle}>
         <div style={{ display: "flex", minWidth: "0px", overflow: "hidden" }}>
-          <a href={item.cover_img} target="_blank">
+          <a href={item.cover_img} target="_blank" rel="noopener noreferrer">
             <Card.Img
               variant="top"
               src={item.cover_img}

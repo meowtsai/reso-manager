@@ -18,6 +18,9 @@ import {
   COSER_UPDATE_REQUEST,
   COSER_UPDATE_SUCCESS,
   COSER_UPDATE_FAIL,
+  SCORE_UPDATE_REQUEST,
+  SCORE_UPDATE_SUCCESS,
+  SCORE_UPDATE_FAIL,
 } from "../constants/h55eventConstants";
 
 export const teamListReducer = (
@@ -83,8 +86,30 @@ export const cosplayListReducer = (
       return { ...state, loading: true };
     case COSER_UPDATE_REQUEST:
       return { ...state, updateLoading: true };
+    case SCORE_UPDATE_REQUEST:
+      return { ...state, updateLoading: true, scoreUpdateSuccess: false };
+    case SCORE_UPDATE_SUCCESS:
+      return {
+        ...state,
+        updateLoading: false,
+        scoreUpdateSuccess: true,
+        scores:
+          state.scores.filter(
+            (s) => s._id.toString() === action.payload._id.toString()
+          ).length <= 0
+            ? [...state.scores, action.payload]
+            : state.scores.map((s) =>
+                action.payload._id.toString() === s._id ? action.payload : s
+              ),
+      };
+
     case H55COSPLAY_LIST_SUCCESS:
-      return { error: null, loading: false, cosplays: action.payload };
+      return {
+        error: null,
+        loading: false,
+        cosplays: action.payload.cosplays,
+        scores: action.payload.scores,
+      };
     case COSER_UPDATE_SUCCESS:
       return {
         error: null,
@@ -97,6 +122,7 @@ export const cosplayListReducer = (
       };
     case H55COSPLAY_LIST_FAIL:
     case COSER_UPDATE_FAIL:
+    case SCORE_UPDATE_FAIL:
       return {
         ...state,
         loading: false,

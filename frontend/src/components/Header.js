@@ -3,7 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
-
+import { checkPermissions } from "../helpers/utils";
 import { logout } from "../actions/userActions";
 
 const Header = () => {
@@ -29,17 +29,36 @@ const Header = () => {
             <Nav className="ml-auto">
               {userInfo &&
                 (userInfo.isAdmin ||
+                  checkPermissions(userInfo.permissions, "cosplay", "read") ||
                   checkPermissions(
                     userInfo.permissions,
                     "cosplay",
-                    "read"
+                    "judge"
                   )) && (
                   <NavDropdown title="第五Cosplay" id="cosplay">
-                    <LinkContainer to="/h55event/cosplayreport">
-                      <NavDropdown.Item>統計報表</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/h55event/cosplaylist">
-                      <NavDropdown.Item>參賽者列表</NavDropdown.Item>
+                    {(userInfo.isAdmin ||
+                      checkPermissions(
+                        userInfo.permissions,
+                        "cosplay",
+                        "read"
+                      )) && (
+                      <LinkContainer to="/h55event/cosplayreport">
+                        <NavDropdown.Item>統計報表</NavDropdown.Item>
+                      </LinkContainer>
+                    )}
+                    {(userInfo.isAdmin ||
+                      checkPermissions(
+                        userInfo.permissions,
+                        "cosplay",
+                        "read"
+                      )) && (
+                      <LinkContainer to="/h55event/cosplaylist">
+                        <NavDropdown.Item>參賽者列表</NavDropdown.Item>
+                      </LinkContainer>
+                    )}
+
+                    <LinkContainer to="/h55event/cosplayjudge">
+                      <NavDropdown.Item>評分列表</NavDropdown.Item>
                     </LinkContainer>
                   </NavDropdown>
                 )}
@@ -62,7 +81,7 @@ const Header = () => {
                     </LinkContainer>
                   </NavDropdown>
                 )}
-              {userInfo && (
+              {userInfo && userInfo.isAdmin && (
                 <NavDropdown title="萬聖狂歡盃" id="h55menu">
                   <LinkContainer to="/h55event/teamlist">
                     <NavDropdown.Item>報名隊伍</NavDropdown.Item>
@@ -123,14 +142,14 @@ export default Header;
 //     "__v": 0
 //   }
 // ]
-const checkPermissions = (permissions, resource, op) => {
-  //return true;
-  const filteredPerm = permissions.filter(
-    (perm) => perm.resource.resourceName === resource
-  )[0];
-  console.log("checkPermissions", filteredPerm);
-  if (filteredPerm && filteredPerm.operations.indexOf(op) > -1) {
-    return true;
-  }
-  return false;
-};
+// const checkPermissions = (permissions, resource, op) => {
+//   //return true;
+//   const filteredPerm = permissions.filter(
+//     (perm) => perm.resource.resourceName === resource
+//   )[0];
+//   //console.log("checkPermissions", filteredPerm);
+//   if (filteredPerm && filteredPerm.operations.indexOf(op) > -1) {
+//     return true;
+//   }
+//   return false;
+// };

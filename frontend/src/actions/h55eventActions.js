@@ -18,8 +18,64 @@ import {
   COSER_UPDATE_REQUEST,
   COSER_UPDATE_SUCCESS,
   COSER_UPDATE_FAIL,
+  SCORE_UPDATE_REQUEST,
+  SCORE_UPDATE_SUCCESS,
+  SCORE_UPDATE_FAIL,
 } from "../constants/h55eventConstants";
 import { logout } from "./userActions";
+
+export const updateScoreById = (scoreData, action) => async (
+  dispatch,
+  getState
+) => {
+  console.log("updateScoreById", action, scoreData);
+  try {
+    dispatch({
+      type: SCORE_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } =
+      action === "add"
+        ? await axios.post(
+            `/api/cosplay/${scoreData.coser_id}/score`,
+            scoreData,
+            config
+          )
+        : await axios.put(
+            `/api/cosplay/${scoreData.coser_id}/score`,
+            scoreData,
+            config
+          );
+
+    dispatch({
+      type: SCORE_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: SCORE_UPDATE_FAIL,
+      payload: message,
+    });
+  }
+};
 
 export const updateApplyById = (apply) => async (dispatch, getState) => {
   try {
