@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import CosplayApply from "../models/CosplayApply.js";
 import Log from "../models/logModel.js";
 import CosplayScore from "../models/CosplayScoreModel.js";
+import EventLog from "../models/EventLogModel.js";
 
 // @desc    Get all apply record
 // @route   GET /api/cosplay/role/list
@@ -9,8 +10,14 @@ import CosplayScore from "../models/CosplayScoreModel.js";
 const getCosplayApplies = asyncHandler(async (req, res) => {
   const cosplayapplies = await CosplayApply.find({});
   const scores = await CosplayScore.find({ judge: req.user._id });
+  const scores_all = await CosplayScore.find({});
 
-  res.json({ cosplays: cosplayapplies, scores });
+  const fbvotes = await EventLog.aggregate([
+    { $match: { action: "vote" } },
+    { $group: { _id: "$event", count: { $sum: 1 } } },
+  ]);
+
+  res.json({ cosplays: cosplayapplies, scores, fbvotes, scores_all });
 });
 
 // @desc    Get apply record by id
@@ -62,12 +69,12 @@ const updateApplyStatus = asyncHandler(async (req, res) => {
 // @route   GET /api/cosplay/:id/score
 // @access  Private/Admin
 const getScoreById = asyncHandler(async (req, res) => {
-  console.log(req.params.id);
+  //console.log(req.params.id);
   const apply = await CosplayApply.findById(req.params.id);
   //user_id: req.user._id,
   if (apply) {
     const scores = await CosplayScore.find({ coser: apply._id });
-    console.log("scores", scores);
+    //console.log("scores", scores);
     res.json(scores);
   } else {
     res.status(404);

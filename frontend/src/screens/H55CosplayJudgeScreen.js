@@ -204,7 +204,8 @@ const H55CosplayJudgeScreen = ({ history }) => {
                       </div>
                     </td>
                     <td>
-                      {checkPermissions(
+                      {userInfo &&
+                      checkPermissions(
                         userInfo.permissions,
                         "cosplay",
                         "judge"

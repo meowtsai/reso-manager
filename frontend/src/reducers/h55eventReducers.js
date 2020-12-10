@@ -109,6 +109,9 @@ export const cosplayListReducer = (
         loading: false,
         cosplays: action.payload.cosplays,
         scores: action.payload.scores,
+        scores_all: action.payload.scores_all,
+
+        fbvotes: action.payload.fbvotes,
       };
     case COSER_UPDATE_SUCCESS:
       return {

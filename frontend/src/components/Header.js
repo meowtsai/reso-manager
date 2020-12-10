@@ -7,7 +7,6 @@ import { checkPermissions } from "../helpers/utils";
 import { logout } from "../actions/userActions";
 
 const Header = () => {
-  console.log("header");
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);

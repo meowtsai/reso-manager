@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Row, Col } from "react-bootstrap";
 import { DateTime } from "luxon";
@@ -9,10 +9,13 @@ import Message from "../components/Message";
 const H55CosplayReportScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cosplayList = useSelector((state) => state.cosplayList);
-  const { loading, error, cosplays } = cosplayList;
+  const { loading, error, cosplays, scores, fbvotes, scores_all } = cosplayList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const judge1 = "5fd198f7d27abe0d2f679eb2";
+  const judge2 = "5fd19900d27abe0d2f679eb3";
 
   useEffect(() => {
     if (userInfo) {
@@ -31,11 +34,74 @@ const H55CosplayReportScreen = ({ history }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <Row>
-          <Col xs={6}>
+          <Col xs={4}>
             <h5>每日統計報表</h5>
             <DialyStatistics list={cosplays} />
           </Col>
-          <Col xs={6}></Col>
+          <Col xs={8}>
+            <h5 className="text-info">得分表</h5>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th scope="col" colSpan="4">
+                    評審1
+                  </th>
+                  <th scope="col" colSpan="4">
+                    評審2
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="col">Coser暱稱</th>
+                  <th scope="col">FB得票</th>
+                  <td>角色</td>
+                  <td>主題</td>
+                  <td>畫面</td>
+                  <td></td>
+                  <td>角色</td>
+                  <td>主題</td>
+                  <td>畫面</td>
+                  <td></td>
+                </tr>
+
+                {cosplays.map((coser) => (
+                  <tr>
+                    <td className="text-light bg-dark">
+                      {coser.nickname}
+
+                      <a
+                        className="text-light bg-dark ml-2"
+                        target="_blank"
+                        href={`https://www.resound.global/cosplay/showcase/${coser._id}`}
+                        rel="noopener noreferrer"
+                      >
+                        <i className="far fa-images"></i>
+                      </a>
+                    </td>
+                    <td>
+                      {fbvotes.filter((c) => c._id === coser._id).length > 0
+                        ? fbvotes.filter((c) => c._id === coser._id)[0].count
+                        : 0}
+                    </td>
+
+                    <JudgeScore
+                      score={scores_all.filter(
+                        (s) => s.coser === coser._id && s.judge === judge1
+                      )}
+                    />
+                    <JudgeScore
+                      score={scores_all.filter(
+                        (s) => s.coser === coser._id && s.judge === judge2
+                      )}
+                    />
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
         </Row>
       )}
     </>
@@ -43,6 +109,25 @@ const H55CosplayReportScreen = ({ history }) => {
 };
 
 export default H55CosplayReportScreen;
+
+const JudgeScore = ({ score }) => {
+  console.log("judgeScore", score);
+  const { score_expression, score_creativity, score_display } =
+    score.length > 0
+      ? score[0]
+      : { score_expression: "", score_creativity: "", score_display: "" };
+
+  return (
+    <Fragment>
+      <td>{score_expression}</td>
+      <td>{score_creativity}</td>
+      <td>{score_display}</td>
+      <td>
+        <strong>{score_expression + score_creativity + score_display}</strong>
+      </td>
+    </Fragment>
+  );
+};
 
 const DialyStatistics = ({ list }) => {
   const alldate = [
@@ -87,7 +172,7 @@ const DialyStatistics = ({ list }) => {
     { cg: 0, pg: 0, cgv: 0, pgv: 0 }
   );
 
-  console.log("total", total);
+  //console.log("total", total);
 
   //const statData = list.map((item) => item.category === "PG");
   return (
