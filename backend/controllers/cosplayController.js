@@ -10,12 +10,76 @@ import EventLog from "../models/EventLogModel.js";
 const getCosplayApplies = asyncHandler(async (req, res) => {
   const cosplayapplies = await CosplayApply.find({});
   const scores = await CosplayScore.find({ judge: req.user._id });
-  const scores_all = await CosplayScore.find({});
+  const scores_allJudge = await CosplayScore.find({});
 
   const fbvotes = await EventLog.aggregate([
     { $match: { action: "vote" } },
     { $group: { _id: "$event", count: { $sum: 1 } } },
   ]);
+
+  const judge1 = "5fd198f7d27abe0d2f679eb2";
+  const judge2 = "5fd19900d27abe0d2f679eb3";
+
+  const voteTotal = fbvotes.reduce((prev, curr) => prev + curr.count, 0);
+  const maxVote = fbvotes.reduce(
+    (prev, curr) => (prev > curr.count ? prev : curr.count),
+    0
+  );
+
+  const scores_all = cosplayapplies.map((coser) => {
+    const fbvote =
+      fbvotes.filter((c) => c._id.toString() === coser._id.toString()).length >
+      0
+        ? fbvotes.filter((c) => c._id.toString() === coser._id.toString())[0]
+            .count
+        : 0;
+
+    const judge1_score = scores_allJudge.filter(
+      (s) =>
+        s.coser.toString() === coser._id.toString() &&
+        s.judge.toString() === judge1
+    )[0] || { score_expression: "", score_creativity: "", score_display: "" };
+
+    const judge2_score = scores_allJudge.filter(
+      (s) =>
+        s.coser.toString() === coser._id.toString() &&
+        s.judge.toString() === judge2
+    )[0] || { score_expression: "", score_creativity: "", score_display: "" };
+
+    const fbpoint =
+      Math.round((((fbvote / voteTotal) * 100) / (maxVote / voteTotal)) * 100) /
+      100;
+
+    const final =
+      Math.round(
+        (fbpoint * 0.05 +
+          ((judge1_score.score_expression +
+            judge1_score.score_creativity +
+            judge1_score.score_display +
+            judge2_score.score_expression +
+            judge2_score.score_creativity +
+            judge2_score.score_display) /
+            2) *
+            0.95) *
+          100
+      ) / 100;
+    return {
+      ...coser._doc,
+      fbvote,
+      fbpoint,
+      final,
+      judge1_score: {
+        score_expression: judge1_score.score_expression,
+        score_creativity: judge1_score.score_creativity,
+        score_display: judge1_score.score_display,
+      },
+      judge2_score: {
+        score_expression: judge2_score.score_expression,
+        score_creativity: judge2_score.score_creativity,
+        score_display: judge2_score.score_display,
+      },
+    };
+  });
 
   res.json({ cosplays: cosplayapplies, scores, fbvotes, scores_all });
 });

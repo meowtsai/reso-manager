@@ -9,7 +9,23 @@ import Message from "../components/Message";
 const H55CosplayReportScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cosplayList = useSelector((state) => state.cosplayList);
-  const { loading, error, cosplays, scores, fbvotes, scores_all } = cosplayList;
+  const {
+    loading,
+    error,
+    cosplays,
+    scores,
+    fbvotes = [],
+    scores_all = [],
+  } = cosplayList;
+
+  const voteTotal = fbvotes.reduce((prev, curr) => prev + curr.count, 0);
+  const maxVote = fbvotes.reduce(
+    (prev, curr) => (prev > curr.count ? prev : curr.count),
+    0
+  );
+
+  console.log("voteTotal", voteTotal);
+  console.log("maxVote", maxVote);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -25,6 +41,23 @@ const H55CosplayReportScreen = ({ history }) => {
     }
   }, [dispatch, history, userInfo]);
 
+  const calFianl = (fbpoint, judge1point, judge2point) => {
+    return (
+      Math.round(
+        (fbpoint * 0.05 +
+          ((judge1point.score_expression +
+            judge1point.score_creativity +
+            judge1point.score_display +
+            judge2point.score_expression +
+            judge2point.score_creativity +
+            judge2point.score_display) /
+            2) *
+            0.95) *
+          100
+      ) / 100
+    );
+  };
+
   return (
     <>
       <h1>第五人格Cos大賽報表</h1>
@@ -34,16 +67,78 @@ const H55CosplayReportScreen = ({ history }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <Row>
-          <Col xs={4}>
+          <Col xs={3}>
             <h5>每日統計報表</h5>
             <DialyStatistics list={cosplays} />
           </Col>
-          <Col xs={8}>
+          <Col xs={9}>
             <h5 className="text-info">得分表</h5>
+            專業組
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th></th>
+                  <th></th>
+
+                  <th scope="col" colSpan="4">
+                    評審1
+                  </th>
+                  <th scope="col" colSpan="4">
+                    評審2
+                  </th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="col">Coser暱稱</th>
+                  <th scope="col">FB得分</th>
+                  <td>角色</td>
+                  <td>主題</td>
+                  <td>畫面</td>
+                  <td></td>
+                  <td>角色</td>
+                  <td>主題</td>
+                  <td>畫面</td>
+                  <td></td>
+                  <th scope="col">總分</th>
+                </tr>
+
+                {scores_all
+                  .filter((c) => c.status === "VERIFIED" && c.category === "PG")
+                  .sort((a, b) => b.final - a.final)
+                  .map((coser) => (
+                    <tr>
+                      <td className="text-light bg-dark">
+                        {coser.nickname}
+
+                        <a
+                          className="text-light bg-dark ml-2"
+                          target="_blank"
+                          href={`https://www.resound.global/cosplay/showcase/${coser._id}`}
+                          rel="noopener noreferrer"
+                        >
+                          <i className="far fa-images"></i>
+                        </a>
+                      </td>
+
+                      <td>
+                        {coser.fbpoint} <small>[{coser.fbvote} ]</small>{" "}
+                      </td>
+
+                      <JudgeScore score={coser.judge1_score} />
+                      <JudgeScore score={coser.judge2_score} />
+                      <td>{coser.final}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+            創意組
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th></th>
+
                   <th></th>
                   <th scope="col" colSpan="4">
                     評審1
@@ -51,12 +146,14 @@ const H55CosplayReportScreen = ({ history }) => {
                   <th scope="col" colSpan="4">
                     評審2
                   </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th scope="col">Coser暱稱</th>
-                  <th scope="col">FB得票</th>
+
+                  <th scope="col">FB得分</th>
                   <td>角色</td>
                   <td>主題</td>
                   <td>畫面</td>
@@ -65,40 +162,36 @@ const H55CosplayReportScreen = ({ history }) => {
                   <td>主題</td>
                   <td>畫面</td>
                   <td></td>
+                  <th scope="col">總分</th>
                 </tr>
 
-                {cosplays.map((coser) => (
-                  <tr>
-                    <td className="text-light bg-dark">
-                      {coser.nickname}
+                {scores_all
+                  .filter((c) => c.status === "VERIFIED" && c.category === "CG")
+                  .sort((a, b) => b.final - a.final)
+                  .map((coser) => (
+                    <tr>
+                      <td className="text-light bg-dark">
+                        {coser.nickname}
 
-                      <a
-                        className="text-light bg-dark ml-2"
-                        target="_blank"
-                        href={`https://www.resound.global/cosplay/showcase/${coser._id}`}
-                        rel="noopener noreferrer"
-                      >
-                        <i className="far fa-images"></i>
-                      </a>
-                    </td>
-                    <td>
-                      {fbvotes.filter((c) => c._id === coser._id).length > 0
-                        ? fbvotes.filter((c) => c._id === coser._id)[0].count
-                        : 0}
-                    </td>
+                        <a
+                          className="text-light bg-dark ml-2"
+                          target="_blank"
+                          href={`https://www.resound.global/cosplay/showcase/${coser._id}`}
+                          rel="noopener noreferrer"
+                        >
+                          <i className="far fa-images"></i>
+                        </a>
+                      </td>
 
-                    <JudgeScore
-                      score={scores_all.filter(
-                        (s) => s.coser === coser._id && s.judge === judge1
-                      )}
-                    />
-                    <JudgeScore
-                      score={scores_all.filter(
-                        (s) => s.coser === coser._id && s.judge === judge2
-                      )}
-                    />
-                  </tr>
-                ))}
+                      <td>
+                        {coser.fbpoint} <small>[{coser.fbvote} ]</small>{" "}
+                      </td>
+
+                      <JudgeScore score={coser.judge1_score} />
+                      <JudgeScore score={coser.judge2_score} />
+                      <td>{coser.final}</td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
           </Col>
@@ -111,11 +204,8 @@ const H55CosplayReportScreen = ({ history }) => {
 export default H55CosplayReportScreen;
 
 const JudgeScore = ({ score }) => {
-  console.log("judgeScore", score);
-  const { score_expression, score_creativity, score_display } =
-    score.length > 0
-      ? score[0]
-      : { score_expression: "", score_creativity: "", score_display: "" };
+  //console.log("judgeScore", score);
+  const { score_expression, score_creativity, score_display } = score;
 
   return (
     <Fragment>
