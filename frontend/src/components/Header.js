@@ -26,17 +26,23 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              {userInfo && userInfo.isAdmin && (
-                <NavDropdown
-                  title="KOL"
-                  id="kol"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <LinkContainer to="/quotes/kol/list">
-                    <NavDropdown.Item>KOL查價工具</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-              )}
+              {userInfo &&
+                (userInfo.isAdmin ||
+                  checkPermissions(
+                    userInfo.permissions,
+                    "kol_quotes",
+                    "read"
+                  )) && (
+                  <NavDropdown
+                    title="KOL"
+                    id="kol"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <LinkContainer to="/quotes/kol/list">
+                      <NavDropdown.Item>KOL查價工具</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
+                )}
 
               {userInfo &&
                 (userInfo.isAdmin ||
