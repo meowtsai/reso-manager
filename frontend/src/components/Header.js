@@ -26,6 +26,18 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown
+                  title="KOL"
+                  id="kol"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <LinkContainer to="/quotes/kol/list">
+                    <NavDropdown.Item>KOL查價工具</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
+
               {userInfo &&
                 (userInfo.isAdmin ||
                   checkPermissions(userInfo.permissions, "cosplay", "read") ||
@@ -34,7 +46,11 @@ const Header = () => {
                     "cosplay",
                     "judge"
                   )) && (
-                  <NavDropdown title="第五Cosplay" id="cosplay">
+                  <NavDropdown
+                    title="第五Cosplay"
+                    id="cosplay"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {(userInfo.isAdmin ||
                       checkPermissions(
                         userInfo.permissions,
@@ -68,7 +84,11 @@ const Header = () => {
                     "mentors",
                     "read"
                   )) && (
-                  <NavDropdown title="帶練課程" id="mentors">
+                  <NavDropdown
+                    title="帶練課程"
+                    id="mentors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <LinkContainer to="/mentors/recordlist">
                       <NavDropdown.Item>預約管理</NavDropdown.Item>
                     </LinkContainer>
@@ -81,7 +101,11 @@ const Header = () => {
                   </NavDropdown>
                 )}
               {userInfo && userInfo.isAdmin && (
-                <NavDropdown title="萬聖狂歡盃" id="h55menu">
+                <NavDropdown
+                  title="萬聖狂歡盃"
+                  id="h55menu"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <LinkContainer to="/h55event/teamlist">
                     <NavDropdown.Item>報名隊伍</NavDropdown.Item>
                   </LinkContainer>
@@ -91,7 +115,11 @@ const Header = () => {
                 </NavDropdown>
               )}
               {userInfo && userInfo.isAdmin && (
-                <NavDropdown title="後台管理" id="manage">
+                <NavDropdown
+                  title="後台管理"
+                  id="manage"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <LinkContainer to="/manage/role">
                     <NavDropdown.Item>角色職務管理</NavDropdown.Item>
                   </LinkContainer>
@@ -104,7 +132,11 @@ const Header = () => {
                 </NavDropdown>
               )}
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
+                <NavDropdown
+                  title={userInfo.name}
+                  id="username"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>個人檔案</NavDropdown.Item>
                   </LinkContainer>

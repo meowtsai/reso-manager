@@ -1,0 +1,3 @@
+export const KOL_LIST_REQUEST = "KOL_LIST_REQUEST";
+export const KOL_LIST_SUCCESS = "KOL_LIST_SUCCESS";
+export const KOL_LIST_FAIL = "KOL_LIST_FAIL";

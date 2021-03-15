@@ -17,6 +17,8 @@ import mentorRoutes from "./routes/mentors/mentorRoutes.js";
 
 import cosplayRoutes from "./routes/cosplayRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
+import kolRoutes from "./routes/kolRoutes.js";
+import quotesRoutes from "./routes/quotes/quotesRoutes.js";
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ app.use("/api/mentors", gameRoutes, mentorRoutes);
 
 app.use("/api/cosplay", cosplayRoutes);
 app.use("/api/test", testRoutes);
+app.use("/api/kol", kolRoutes);
+app.use("/api/quotes", quotesRoutes);
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));

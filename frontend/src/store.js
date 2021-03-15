@@ -34,6 +34,21 @@ import {
   registerListReducer,
 } from "./reducers/mentorReducers";
 
+import { kolListReducer } from "./reducers/kolReducers";
+import {
+  channelListReducer,
+  socialMediaListReducer,
+  serviceCategoriesListReducer,
+  channelCreateReducer,
+  channelDetailsReducer,
+  channelUpdateReducer,
+  quoteItemsListReducer,
+  quoteCreateReducer,
+  quotesListReducer,
+  quoteUpdateReducer,
+  quoteDeleteReducer,
+} from "./reducers/quotesReducers";
+
 const reducer = combineReducers({
   teamList: teamListReducer,
   matchList: matchListReducer,
@@ -54,11 +69,22 @@ const reducer = combineReducers({
   rolePermissions: rolePermissionsReducer,
   gameList: gameListReducer,
   registerList: registerListReducer,
-
+  kolList: kolListReducer,
   mentorList: mentorListReducer,
   mentorDetails: mentorDetailsReducer,
   mentorUpdate: mentorUpdateReducer,
   cosplayList: cosplayListReducer,
+  socialMedias: socialMediaListReducer,
+  serviceCategories: serviceCategoriesListReducer,
+  channelCreate: channelCreateReducer,
+  channelList: channelListReducer,
+  channelDetails: channelDetailsReducer,
+  channelUpdate: channelUpdateReducer,
+  quoteItemsList: quoteItemsListReducer,
+  quoteCreate: quoteCreateReducer,
+  quotesList: quotesListReducer,
+  quoteUpdate: quoteUpdateReducer,
+  quoteDelete: quoteDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

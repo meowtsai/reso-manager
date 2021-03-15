@@ -25,6 +25,14 @@ import H55CosplayListScreen from "./screens/H55CosplayListScreen";
 import H55CosplayReportScreen from "./screens/H55CosplayReportScreen";
 import H55CosplayJudgeScreen from "./screens/H55CosplayJudgeScreen";
 
+import KolListScreen from "./screens/KolListScreen";
+import SocialMediaListScreen from "./screens/quotes/SocialMediaListScreen";
+import SocialMediaCreateScreen from "./screens/quotes/SocialMediaCreateScreen";
+import QuotesKOLHomeScreen from "./screens/quotes/QuotesKOLHomeScreen";
+import KOLCreateScreen from "./screens/quotes/KOLCreateScreen";
+import KOLEditScreen from "./screens/quotes/KOLEditScreen";
+import KOLDetailPageScreen from "./screens/quotes/KOLDetailPageScreen";
+
 const App = () => {
   return (
     <Router>
@@ -73,6 +81,20 @@ const App = () => {
           <Route path="/mentors/mentorlist" component={MentorListScreen} />
           <Route path="/mentors/mentor/:id/edit" component={MentorEditScreen} />
           <Route path="/mentors/recordlist" component={RecordListScreen} />
+          <Route path="/kol/list" component={KolListScreen} />
+          <Route
+            path="/quotes/socialmedias/list"
+            component={SocialMediaListScreen}
+          />
+          <Route
+            path="/quotes/socialmedias/create"
+            component={SocialMediaCreateScreen}
+          />
+
+          <Route path="/quotes/kol/list" component={QuotesKOLHomeScreen} />
+          <Route path="/quotes/kol/create" component={KOLCreateScreen} />
+          <Route path="/quotes/kol/:id/edit" component={KOLEditScreen} />
+          <Route path="/quotes/kol/:id/view" component={KOLDetailPageScreen} />
         </Container>
       </main>
       <Footer />
