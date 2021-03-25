@@ -33,6 +33,24 @@ import {
   QUOTE_DELETE_REQUEST,
   QUOTE_DELETE_SUCCESS,
   QUOTE_DELETE_FAIL,
+  CHANNEL_TAGS_CREATE_REQUEST,
+  CHANNEL_TAGS_CREATE_SUCCESS,
+  CHANNEL_TAGS_CREATE_FAIL,
+  TAGS_LIST_REQUEST,
+  TAGS_LIST_SUCCESS,
+  TAGS_LIST_FAIL,
+  SOCIALDATA_CREATE_REQUEST,
+  SOCIALDATA_CREATE_SUCCESS,
+  SOCIALDATA_CREATE_FAIL,
+  SOCIALDATA_LIST_REQUEST,
+  SOCIALDATA_LIST_SUCCESS,
+  SOCIALDATA_LIST_FAIL,
+  SOCIALDATA_UPDATE_REQUEST,
+  SOCIALDATA_UPDATE_SUCCESS,
+  SOCIALDATA_UPDATE_FAIL,
+  SOCIALDATA_DELETE_REQUEST,
+  SOCIALDATA_DELETE_SUCCESS,
+  SOCIALDATA_DELETE_FAIL,
 } from "../constants/quotesConstants";
 import { logout } from "./userActions";
 
@@ -114,7 +132,7 @@ export const getChannelDetail = (id) => async (dispatch, getState) => {
   }
 };
 
-export const listChannels = () => async (dispatch, getState) => {
+export const listChannels = (tagId = "") => async (dispatch, getState) => {
   try {
     dispatch({
       type: CHANNEL_LIST_REQUEST,
@@ -130,7 +148,10 @@ export const listChannels = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/quotes/channel`, config);
+    const { data } = await axios.get(
+      `/api/quotes/channel?tagId=${tagId}`,
+      config
+    );
 
     dispatch({
       type: CHANNEL_LIST_SUCCESS,
@@ -440,6 +461,239 @@ export const deleteQuote = (id) => async (dispatch, getState) => {
     }
     dispatch({
       type: QUOTE_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const createChannelTags = (requestData) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({
+      type: CHANNEL_TAGS_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { channelId, tags } = requestData;
+
+    const { data } = await axios.post(
+      `/api/quotes/channel/${channelId}/tags`,
+      requestData,
+      config
+    );
+
+    dispatch({
+      type: CHANNEL_TAGS_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: CHANNEL_TAGS_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const listTags = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: TAGS_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/quotes/tags`, config);
+
+    dispatch({
+      type: TAGS_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: TAGS_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const createSocialData = (requestData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SOCIALDATA_CREATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      `/api/quotes/socialdata/`,
+      requestData,
+      config
+    );
+
+    dispatch({
+      type: SOCIALDATA_CREATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SOCIALDATA_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const listSocialDataByCondition = (condition) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({
+      type: SOCIALDATA_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      `/api/quotes/socialdata/${condition.channel}/query`,
+      condition,
+      config
+    );
+
+    dispatch({
+      type: SOCIALDATA_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: SOCIALDATA_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const updateSocialData = (socialData) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SOCIALDATA_UPDATE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/quotes/socialdata/${socialData._id}`,
+      socialData,
+      config
+    );
+
+    dispatch({ type: SOCIALDATA_UPDATE_SUCCESS });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: SOCIALDATA_UPDATE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const deleteSocialData = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SOCIALDATA_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/quotes/socialdata/${id}`, config);
+
+    dispatch({ type: SOCIALDATA_DELETE_SUCCESS });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: SOCIALDATA_DELETE_FAIL,
       payload: message,
     });
   }

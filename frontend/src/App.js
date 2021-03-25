@@ -92,6 +92,10 @@ const App = () => {
           />
 
           <Route path="/quotes/kol/list" component={QuotesKOLHomeScreen} />
+          <Route
+            path="/quotes/kol/:tagid/tag"
+            component={QuotesKOLHomeScreen}
+          />
           <Route path="/quotes/kol/create" component={KOLCreateScreen} />
           <Route path="/quotes/kol/:id/edit" component={KOLEditScreen} />
           <Route path="/quotes/kol/:id/view" component={KOLDetailPageScreen} />

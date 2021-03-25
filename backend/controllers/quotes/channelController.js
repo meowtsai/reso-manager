@@ -2,11 +2,19 @@ import asyncHandler from "express-async-handler";
 import Channel from "../../models/quotes/ChannelModel.js";
 import Permission from "../../models/permissionModel.js";
 
+import Tag from "../../models/quotes/TagModel.js";
+
 // @desc    return a list of all channels
 // @route   GET /api/quotes/channel
 // @access  Private
 const getChannels = asyncHandler(async (req, res) => {
-  const channels = await Channel.find({});
+  const tagId = req.query.tagId;
+  console.log(tagId);
+  let getCondition = {};
+  if (tagId) {
+    getCondition.tags = tagId;
+  }
+  const channels = await Channel.find(getCondition);
 
   if (channels) {
     res.status(200).json(channels);
@@ -56,21 +64,26 @@ const createChannel = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get user by ID
-// @route   GET /api/users/:id
+// @route   GET /api/quotes/:id
 // @access  Private/Admin
 const getChannelById = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
 
   if (channel) {
-    res.json(channel);
+    const textTags = await Tag.find({ _id: { $in: channel.tags } }).select({
+      _id: 1,
+      name: 1,
+    });
+
+    res.json({ ...channel._doc, textTags });
   } else {
     res.status(404);
     throw new Error("channel not found");
   }
 });
 
-// @desc    Update user
-// @route   PUT /api/users/:id
+// @desc    Update channel
+// @route   PUT /api/quotes/:id
 // @access  Private/Admin
 const updateChannel = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
@@ -102,4 +115,53 @@ const updateChannel = asyncHandler(async (req, res) => {
   }
 });
 
-export { getChannels, createChannel, getChannelById, updateChannel };
+// @desc    Update tag column
+// @route   POST /api/quotes/channel/tags
+// @access  Private/Admin
+const updateChannelTags = asyncHandler(async (req, res) => {
+  const { channelId, tags } = req.body;
+  console.log(req.body);
+  const channel = await Channel.findById(channelId);
+
+  if (channel) {
+    if (Array.isArray(tags)) {
+      const tagList = [];
+      for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i];
+
+        const existedTag = await Tag.findOne({ name: tag });
+        console.log("existedTag", existedTag);
+        if (existedTag) {
+          tagList.push(existedTag._id);
+        } else {
+          const insertedTag = await Tag.create({ name: tag });
+          console.log("insertedTag", insertedTag);
+          tagList.push(insertedTag._id);
+        }
+      }
+      console.log("tagList", tagList);
+
+      channel.tags = tagList;
+      const updatedChannel = await channel.save();
+
+      res.json({
+        _id: updatedChannel._id,
+        tags: updatedChannel.tags,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Tags must be an array");
+    }
+  } else {
+    res.status(404);
+    throw new Error("Channel not found");
+  }
+});
+
+export {
+  getChannels,
+  createChannel,
+  getChannelById,
+  updateChannel,
+  updateChannelTags,
+};

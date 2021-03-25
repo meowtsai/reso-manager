@@ -35,6 +35,25 @@ import {
   QUOTE_DELETE_REQUEST,
   QUOTE_DELETE_SUCCESS,
   QUOTE_DELETE_FAIL,
+  CHANNEL_TAGS_CREATE_REQUEST,
+  CHANNEL_TAGS_CREATE_SUCCESS,
+  CHANNEL_TAGS_CREATE_FAIL,
+  TAGS_LIST_REQUEST,
+  TAGS_LIST_SUCCESS,
+  TAGS_LIST_FAIL,
+  SOCIALDATA_CREATE_REQUEST,
+  SOCIALDATA_CREATE_SUCCESS,
+  SOCIALDATA_CREATE_FAIL,
+  SOCIALDATA_LIST_REQUEST,
+  SOCIALDATA_LIST_SUCCESS,
+  SOCIALDATA_LIST_FAIL,
+  SOCIALDATA_UPDATE_REQUEST,
+  SOCIALDATA_UPDATE_SUCCESS,
+  SOCIALDATA_UPDATE_FAIL,
+  SOCIALDATA_UPDATE_RESET,
+  SOCIALDATA_DELETE_REQUEST,
+  SOCIALDATA_DELETE_SUCCESS,
+  SOCIALDATA_DELETE_FAIL,
 } from "../constants/quotesConstants";
 
 export const channelListReducer = (state = { channels: [] }, action) => {
@@ -186,6 +205,89 @@ export const quoteDeleteReducer = (state = {}, action) => {
     case QUOTE_DELETE_SUCCESS:
       return { loading: false, success: true };
     case QUOTE_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const channelTagsCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CHANNEL_TAGS_CREATE_REQUEST:
+      return { loading: true };
+    case CHANNEL_TAGS_CREATE_SUCCESS:
+      return { loading: false, tags: action.payload, success: true };
+    case CHANNEL_TAGS_CREATE_FAIL:
+      return { loading: false, error: action.payload, success: false };
+    default:
+      return state;
+  }
+};
+
+export const tagsListReducer = (state = { tags: [] }, action) => {
+  switch (action.type) {
+    case TAGS_LIST_REQUEST:
+      return { loading: true };
+    case TAGS_LIST_SUCCESS:
+      return { loading: false, tags: action.payload };
+    case TAGS_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const socialDataCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SOCIALDATA_CREATE_REQUEST:
+      return { loading: true };
+    case SOCIALDATA_CREATE_SUCCESS:
+      return { loading: false, socialData: action.payload, success: true };
+    case SOCIALDATA_CREATE_FAIL:
+      return { loading: false, error: action.payload, success: false };
+    default:
+      return state;
+  }
+};
+
+export const socialDataListReducer = (
+  state = { socialDataList: [] },
+  action
+) => {
+  switch (action.type) {
+    case SOCIALDATA_LIST_REQUEST:
+      return { loading: true };
+    case SOCIALDATA_LIST_SUCCESS:
+      return { loading: false, socialDataList: action.payload };
+    case SOCIALDATA_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const socialDataUpdateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SOCIALDATA_UPDATE_REQUEST:
+      return { loading: true };
+    case SOCIALDATA_UPDATE_SUCCESS:
+      return { loading: false, success: true };
+    case SOCIALDATA_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    case SOCIALDATA_UPDATE_RESET:
+      return { loading: false, success: false };
+    default:
+      return state;
+  }
+};
+
+export const socialDataDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SOCIALDATA_DELETE_REQUEST:
+      return { loading: true };
+    case SOCIALDATA_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case SOCIALDATA_DELETE_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

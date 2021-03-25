@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { Modal, Form, Button } from "react-bootstrap";
+
+import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { DateTime } from "luxon";
 const QuoteCreateModal = ({
   show,
@@ -9,6 +9,8 @@ const QuoteCreateModal = ({
   channelTitle,
   quoteItems,
   onCreateItem,
+  error,
+  success,
 }) => {
   const curDate = DateTime.fromMillis(DateTime.fromISO(new Date()).ts).toFormat(
     "yyyy-MM-dd"
@@ -54,6 +56,17 @@ const QuoteCreateModal = ({
     console.log(itemData);
     onCreateItem(itemData);
   };
+
+  useEffect(() => {
+    if (success) {
+      setRecordDate(curDate);
+      setItem("");
+      setNote("");
+      setPurchasePrice(0);
+      setMarketPrice(0);
+      setErrors({});
+    }
+  }, [success]);
 
   //項目	採購價	市場價 備註
   return (
@@ -135,6 +148,7 @@ const QuoteCreateModal = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Button variant="secondary" onClick={handleClose}>
             取消
           </Button>
@@ -146,7 +160,5 @@ const QuoteCreateModal = ({
     </Modal>
   );
 };
-
-QuoteCreateModal.propTypes = {};
 
 export default QuoteCreateModal;

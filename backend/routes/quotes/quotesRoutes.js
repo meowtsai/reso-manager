@@ -15,7 +15,17 @@ import {
   createChannel,
   getChannelById,
   updateChannel,
+  updateChannelTags,
 } from "../../controllers/quotes/channelController.js";
+import {
+  createSocialData,
+  getSocialDataByCondition,
+  updateSocialData,
+  deleteSocialData,
+  getSocialDataById,
+} from "../../controllers/quotes/socialDataController.js";
+
+import { getTags } from "../../controllers/quotes/tagController.js";
 
 import { getQuoteItems } from "../../controllers/quotes/quoteItemController.js";
 
@@ -35,5 +45,17 @@ router
   .delete(deleteQuote);
 router.route("/query").post(getQuoteByCondition);
 router.route("/quoteitem").get(getQuoteItems);
+
+router.route("/channel/:id/tags").post(updateChannelTags);
+router.route("/tags").get(getTags);
+
+router.route("/socialdata").post(createSocialData);
+
+router.route("/socialdata/:channelId/query").post(getSocialDataByCondition);
+router
+  .route("/socialdata/:id")
+  .get(getSocialDataById)
+  .put(updateSocialData)
+  .delete(deleteSocialData);
 
 export default router;

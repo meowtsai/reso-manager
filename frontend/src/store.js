@@ -47,6 +47,12 @@ import {
   quotesListReducer,
   quoteUpdateReducer,
   quoteDeleteReducer,
+  channelTagsCreateReducer,
+  tagsListReducer,
+  socialDataCreateReducer,
+  socialDataListReducer,
+  socialDataUpdateReducer,
+  socialDataDeleteReducer,
 } from "./reducers/quotesReducers";
 
 const reducer = combineReducers({
@@ -85,6 +91,12 @@ const reducer = combineReducers({
   quotesList: quotesListReducer,
   quoteUpdate: quoteUpdateReducer,
   quoteDelete: quoteDeleteReducer,
+  channelTagsCreate: channelTagsCreateReducer,
+  tagsList: tagsListReducer,
+  socialDataCreate: socialDataCreateReducer,
+  socialDataList: socialDataListReducer,
+  socialDataUpdate: socialDataUpdateReducer,
+  socialDataDelete: socialDataDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

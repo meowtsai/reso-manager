@@ -50,7 +50,7 @@ const KOLEditScreen = ({ history, match }) => {
     if (successUpdate) {
       dispatch({ type: CHANNEL_UPDATE_RESET });
       dispatch({ type: CHANNEL_DETAILS_RESET });
-      history.push("/quotes/kol/list");
+      history.push(`/quotes/kol/${channelId}/view`);
     } else {
       if (!channel.title || channel._id !== channelId) {
         dispatch(listCategories());

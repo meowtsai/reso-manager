@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Modal, Form, Button } from "react-bootstrap";
+import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { DateTime } from "luxon";
 const QuoteEditModal = ({
   quote,
@@ -10,6 +10,7 @@ const QuoteEditModal = ({
   channelTitle,
   quoteItems,
   onEditItem,
+  error,
 }) => {
   const curDate = DateTime.fromMillis(DateTime.fromISO(new Date()).ts).toFormat(
     "yyyy-MM-dd"
@@ -69,7 +70,7 @@ const QuoteEditModal = ({
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title> {channelTitle} 報價紀錄維護</Modal.Title>
+        <Modal.Title> {channelTitle} 報價紀錄編輯</Modal.Title>
       </Modal.Header>
 
       <Form onSubmit={handleSubmit}>
@@ -147,6 +148,7 @@ const QuoteEditModal = ({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Button variant="secondary" onClick={handleClose}>
             取消
           </Button>
