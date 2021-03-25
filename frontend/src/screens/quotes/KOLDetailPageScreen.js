@@ -489,6 +489,7 @@ const KOLDetailPageScreen = ({ history, match }) => {
             channelTitle={channel.title}
             onCreateItem={(data) => handleCreateSocial(data)}
             error={socialDataCreateError}
+            success={socialDataCreateSuccess}
           />
 
           {selectedSocialDataRecord._id && (

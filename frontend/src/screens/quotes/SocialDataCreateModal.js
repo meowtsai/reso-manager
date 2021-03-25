@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { socials } from "./quotesConfig";
 import { DateTime } from "luxon";
@@ -9,6 +9,7 @@ const SocialDataCreateModal = ({
   channelTitle,
   onCreateItem,
   error,
+  success,
 }) => {
   const curDate = DateTime.fromMillis(DateTime.fromISO(new Date()).ts).toFormat(
     "yyyy-MM-dd"
@@ -47,6 +48,22 @@ const SocialDataCreateModal = ({
 
     onCreateItem(itemData);
   };
+
+  useEffect(() => {
+    return () => {
+      setRecordDate(curDate);
+      setCount(0);
+      setPlatform("");
+      setErrors({});
+    };
+  }, []);
+
+  useEffect(() => {
+    setRecordDate(curDate);
+    setCount(0);
+    setPlatform("");
+    setErrors({});
+  }, [success]);
 
   //日期  平台 粉絲數
   return (

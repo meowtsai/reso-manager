@@ -61,6 +61,11 @@ const KOLEditScreen = ({ history, match }) => {
         setCategories(channel.categories);
         setYoutube(channel.socials["youtube"]);
         setFacebook(channel.socials["facebook"] ?? "");
+
+        setInstagram(channel.socials["instagram"] ?? "");
+        setTwitch(channel.socials["twitch"] ?? "");
+        setTiktok(channel.socials["tiktok"] ?? "");
+
         setIntro(channel.intro);
         setNote(channel.note);
         setStatus(channel.status);
