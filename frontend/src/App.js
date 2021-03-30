@@ -32,6 +32,7 @@ import QuotesKOLHomeScreen from "./screens/quotes/QuotesKOLHomeScreen";
 import KOLCreateScreen from "./screens/quotes/KOLCreateScreen";
 import KOLEditScreen from "./screens/quotes/KOLEditScreen";
 import KOLDetailPageScreen from "./screens/quotes/KOLDetailPageScreen";
+import QuotesKOLPriceScreen from "./screens/quotes/QuotesKOLPriceScreen";
 
 const App = () => {
   return (
@@ -92,6 +93,7 @@ const App = () => {
           />
 
           <Route path="/quotes/kol/list" component={QuotesKOLHomeScreen} />
+          <Route path="/quotes/kol/price" component={QuotesKOLPriceScreen} />
           <Route
             path="/quotes/kol/:tagid/tag"
             component={QuotesKOLHomeScreen}

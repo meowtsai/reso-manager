@@ -25,6 +25,8 @@ import {
   getSocialDataById,
 } from "../../controllers/quotes/socialDataController.js";
 
+import { getDataForPricingPage } from "../../controllers/quotes/pricingController.js";
+
 import { getTags } from "../../controllers/quotes/tagController.js";
 
 import { getQuoteItems } from "../../controllers/quotes/quoteItemController.js";
@@ -57,5 +59,7 @@ router
   .get(getSocialDataById)
   .put(updateSocialData)
   .delete(deleteSocialData);
+
+router.route("/pricing").post(getDataForPricingPage);
 
 export default router;

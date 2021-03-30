@@ -54,6 +54,9 @@ import {
   SOCIALDATA_DELETE_REQUEST,
   SOCIALDATA_DELETE_SUCCESS,
   SOCIALDATA_DELETE_FAIL,
+  PRICING_LIST_REQUEST,
+  PRICING_LIST_SUCCESS,
+  PRICING_LIST_FAIL,
 } from "../constants/quotesConstants";
 
 export const channelListReducer = (state = { channels: [] }, action) => {
@@ -288,6 +291,27 @@ export const socialDataDeleteReducer = (state = {}, action) => {
     case SOCIALDATA_DELETE_SUCCESS:
       return { loading: false, success: true };
     case SOCIALDATA_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const pricingListReducer = (
+  state = { quotes: [], channels: [], quoteItems: [] },
+  action
+) => {
+  switch (action.type) {
+    case PRICING_LIST_REQUEST:
+      return { loading: true };
+    case PRICING_LIST_SUCCESS:
+      return {
+        loading: false,
+        quotes: action.payload.quotes,
+        channels: action.payload.channels,
+        quoteItems: action.payload.quoteItems,
+      };
+    case PRICING_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

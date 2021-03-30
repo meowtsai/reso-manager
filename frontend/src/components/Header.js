@@ -39,7 +39,10 @@ const Header = () => {
                     onClick={(e) => e.stopPropagation()}
                   >
                     <LinkContainer to="/quotes/kol/list">
-                      <NavDropdown.Item>KOL查價工具</NavDropdown.Item>
+                      <NavDropdown.Item>KOL列表</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/quotes/kol/price">
+                      <NavDropdown.Item>KOL報價</NavDropdown.Item>
                     </LinkContainer>
                   </NavDropdown>
                 )}

@@ -74,8 +74,6 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
     }
   }, [channelList]);
 
-  console.log("pages", pages);
-  console.log("page", page);
   const haltHandler = (mentor_id, mentor_title) => {
     window.confirm(`要暫時停止追蹤[${mentor_title}]這個頻道嗎? `);
   };

@@ -51,7 +51,11 @@ import {
   SOCIALDATA_DELETE_REQUEST,
   SOCIALDATA_DELETE_SUCCESS,
   SOCIALDATA_DELETE_FAIL,
+  PRICING_LIST_REQUEST,
+  PRICING_LIST_SUCCESS,
+  PRICING_LIST_FAIL,
 } from "../constants/quotesConstants";
+
 import { logout } from "./userActions";
 
 export const updateChannel = (channel) => async (dispatch, getState) => {
@@ -694,6 +698,47 @@ export const deleteSocialData = (id) => async (dispatch, getState) => {
     }
     dispatch({
       type: SOCIALDATA_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const getPricingData = (condition) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRICING_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      `/api/quotes/pricing/`,
+      condition,
+      config
+    );
+
+    dispatch({
+      type: PRICING_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: PRICING_LIST_FAIL,
       payload: message,
     });
   }

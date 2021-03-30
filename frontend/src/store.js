@@ -53,6 +53,7 @@ import {
   socialDataListReducer,
   socialDataUpdateReducer,
   socialDataDeleteReducer,
+  pricingListReducer,
 } from "./reducers/quotesReducers";
 
 const reducer = combineReducers({
@@ -97,6 +98,7 @@ const reducer = combineReducers({
   socialDataList: socialDataListReducer,
   socialDataUpdate: socialDataUpdateReducer,
   socialDataDelete: socialDataDeleteReducer,
+  pricingList: pricingListReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
