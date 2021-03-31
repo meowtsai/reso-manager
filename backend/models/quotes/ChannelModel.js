@@ -29,6 +29,7 @@ const ChannelSchema = new mongoose.Schema(
     },
 
     status: { type: Number, required: true, default: 1 },
+    noxStatusCode: { type: Number },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tags" }],
   },
   {

@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Channel from "../../models/quotes/ChannelModel.js";
 import Permission from "../../models/permissionModel.js";
+import NoxTrackingChannel from "../../models/quotes/NoxTrackingChannelModel.js";
 
 import Tag from "../../models/quotes/TagModel.js";
 
@@ -68,6 +69,9 @@ const createChannel = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const getChannelById = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
+  const noxData = await NoxTrackingChannel.find({ channel: req.params.id })
+    .sort({ createdAt: -1 })
+    .limit(1);
 
   if (channel) {
     const textTags = await Tag.find({ _id: { $in: channel.tags } }).select({
@@ -75,7 +79,7 @@ const getChannelById = asyncHandler(async (req, res) => {
       name: 1,
     });
 
-    res.json({ ...channel._doc, textTags });
+    res.json({ ...channel._doc, textTags, noxData: noxData ? noxData[0] : {} });
   } else {
     res.status(404);
     throw new Error("channel not found");

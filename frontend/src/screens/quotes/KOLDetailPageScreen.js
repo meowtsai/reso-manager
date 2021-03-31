@@ -1,7 +1,17 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Button, Card, Badge, Image } from "react-bootstrap";
+import {
+  Table,
+  Row,
+  Col,
+  Button,
+  Card,
+  Badge,
+  Image,
+  ListGroup,
+  Alert,
+} from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { DateTime } from "luxon";
 import {
@@ -305,6 +315,147 @@ const KOLDetailPageScreen = ({ history, match }) => {
               </Card>
             </Col>
           </Row>
+          <Row className="mt-3">
+            <Col>
+              <Card>
+                <Card.Body>
+                  <h5>Nox 資料</h5>
+
+                  {channel.noxStatusCode !== 10000 && channel.noxStatusCode && (
+                    <Alert variant="danger">
+                      {channel.noxStatusCode} - 抓取資料失敗(可能數據太低)
+                    </Alert>
+                  )}
+                  {channel.noxData && (
+                    <>
+                      {" "}
+                      <ListGroup horizontal>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>Nox 評級</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.noxScore}
+                              <ScoreToStars score={channel.noxData.noxScore} />
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>粉絲數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.subscribers}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>總觀看量</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.totalViews}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>平均觀看數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.estViewsPerVideo}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>影片總數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.totalVideos}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>網紅地區排名</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.subscriberCountryRanking}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+
+                        <ListGroup.Item>
+                          <div>
+                            <h6>預估月收入</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.estMonthEarning}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                      </ListGroup>
+                      <ListGroup horizontal className="my-2">
+                        <ListGroup.Item>
+                          <div>
+                            <h6>近30支影片觀看數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.lastThirtyVideoViews}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>近30支影片按讚數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.lastThirtyVideoLikes}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>近30支影片倒讚數</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.lastThirtyVideoDisLikes}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>近30支影片平均觀看量</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.noxData.averageViews}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>開啟nox分析報告</h6>
+                            <small className="text-muted">
+                              {" "}
+                              {channel.socials?.youtube && (
+                                <a
+                                  href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
+                                  target="_blank"
+                                >
+                                  <i className="fas fa-external-link-alt ml-2"></i>
+                                </a>
+                              )}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                      </ListGroup>
+                    </>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
 
           <Row className="mt-3">
             <Col>
@@ -508,3 +659,16 @@ const KOLDetailPageScreen = ({ history, match }) => {
   );
 };
 export default KOLDetailPageScreen;
+
+const ScoreToStars = ({ score }) => {
+  let rtnDiv = [];
+  for (let i = 0; i < score; i++) {
+    //rtnDiv.push(<i className="fas fa-star-half"></i>);
+    if (i + 1 < score) {
+      rtnDiv.push(<i className="fas fa-star ml-1 text-warning"></i>);
+    } else {
+      rtnDiv.push(<i className="fas fa-star-half ml-1 text-warning"></i>);
+    }
+  }
+  return rtnDiv;
+};
