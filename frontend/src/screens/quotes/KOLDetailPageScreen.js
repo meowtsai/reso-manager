@@ -234,7 +234,8 @@ const KOLDetailPageScreen = ({ history, match }) => {
                           <strong>社交平台</strong>{" "}
                           <span className="ml-2">
                             {Object.keys(channel.socials).map((key) =>
-                              channel.socials[key] !== "" ? (
+                              channel.socials[key] !== "" &&
+                              channel.socials[key] !== null ? (
                                 <span key={`span-${key}`}>
                                   <a
                                     target="_blank"

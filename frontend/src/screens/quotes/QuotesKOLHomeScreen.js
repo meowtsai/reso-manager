@@ -199,7 +199,8 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                         <td>
                           {channel.socials &&
                             Object.keys(channel.socials).map((key) =>
-                              channel.socials[key] !== "" ? (
+                              channel.socials[key] !== "" &&
+                              channel.socials[key] !== null ? (
                                 <span key={`span-${key}`}>
                                   <a
                                     target="_blank"
