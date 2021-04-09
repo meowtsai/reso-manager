@@ -1,13 +1,17 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Image } from "react-bootstrap";
+import { Table, Row, Col, Image, Form } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { getPricingData } from "../../actions/quotesActions";
 import { socials } from "./quotesConfig";
 import { Link } from "react-router-dom";
+import { CSVLink } from "react-csv";
+
 const QuotesKOLPriceScreen = ({ history }) => {
   const dispatch = useDispatch();
+
+  const [selectedChannels, setSelectedChannels] = useState([]);
 
   const quoteCategories = [
     "直播",
@@ -25,6 +29,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
     channels = [],
     quotes = [],
     quoteItems,
+    noxData,
   } = pricingList;
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -37,26 +42,101 @@ const QuotesKOLPriceScreen = ({ history }) => {
     }
   }, [dispatch, history, userInfo]);
 
-  const formatPrice = (quoteData, category) => {
+  const formatPrice = (quoteData, category, option = 1) => {
     const item = quoteItems.filter((qi) => qi._id === quoteData._id.item)[0];
 
     if (item.name === category) {
       if (socials.map((s) => s.id).indexOf(item.platform) > -1) {
-        return (
+        return option === 1 ? (
           <div>
             {" "}
             <i className={`fab fa-${item.platform} mr-2 text-light`}></i>{" "}
             {quoteData.latest}{" "}
           </div>
+        ) : (
+          item.platform + ":" + quoteData.latest
         );
       } else {
-        return <div> {quoteData.latest} </div>;
+        return option === 1 ? (
+          <div> {quoteData.latest} </div>
+        ) : (
+          quoteData.latest
+        );
       }
     } else {
       return null;
     }
   };
 
+  const exportData = () => {
+    let rtnData = [];
+    for (let i = 0; i < channels.length; i++) {
+      const item = channels[i];
+      if (selectedChannels.indexOf(item._id) > -1) {
+        const record = {
+          _id: item._id,
+          title: item.title,
+        };
+        const noxArray = noxData.filter((n) => n._id.channel === item._id);
+        const quote = quotes.filter((q) => q._id.channel === item._id);
+
+        record.socials = item.socials
+          ? Object.keys(item.socials)
+              .filter((key) => {
+                if (item.socials[key] && item.socials[key] !== "") {
+                  return true;
+                }
+              })
+              .map(
+                (key) =>
+                  ` ${key}: ${socials.filter((s) => s.id === key)[0].url}/${
+                    item.socials[key]
+                  }`
+              )
+              .join("\n")
+          : "";
+
+        record.ytsubscriber = noxArray.length && noxArray[0]._id.subscribers;
+        record.lastThirtyVideoViews =
+          noxArray.length && noxArray[0]._id.lastThirtyVideoViews;
+
+        quoteCategories.forEach((c, i) => {
+          record["item" + (i + 1)] = quote
+            .map((q) => formatPrice(q, c, 2))
+            .filter((a) => a !== null)
+            .join("\n");
+        });
+
+        rtnData.push(record);
+      }
+    }
+    return rtnData;
+  };
+
+  // [{"_id":{"channel":"60599260e064322b9c5be34d","item":"605bfe5f5739802b4878cda6"},"latest":1500,"ChannelDetail":[]},{"_id":{"channel":"60599260e064322b9c5be34d","item":"605bfe5f5739802b4878cdac"},"latest":3500,"ChannelDetail":[]},{"_id":{"channel":"60599260e064322b9c5be34d","item":"605bfe5f5739802b4878cdb2"},"latest":30000,"ChannelDetail":[]},{"_id":{"channel":"60599260e064322b9c5be34d","item":"605bfe5f5739802b4878cdb1"},"latest":30000,"ChannelDetail":[]}]
+
+  //實況主 平台  頻道訂閱數  頻道連結  近30支平均觀看 採購價 市場價
+  const fileName = `KOL查價列表_${Date.now()}`;
+  const csvHeaders = [
+    { label: "id", key: "_id" },
+    { label: "實況主", key: "title" },
+    { label: "平台", key: "socials" },
+    { label: "頻道訂閱數", key: "ytsubscriber" },
+    { label: "近30支平均觀看", key: "lastThirtyVideoViews" },
+    { label: "直播", key: "item1" },
+    { label: "影片", key: "item2" },
+    { label: "活動主持", key: "item3" },
+    { label: "活動出席", key: "item4" },
+    { label: "影片拍攝出席", key: "item5" },
+  ];
+
+  //   "_id": {
+  //     "channel": "60599261e064322b9c5be386",
+  //     "lastThirtyVideoViews": 6461,
+  //     "subscribers": 123000
+  //   },
+  //   "latest": "2021-03-31T04:32:13.184Z"
+  // },
   return (
     <>
       {" "}
@@ -66,58 +146,97 @@ const QuotesKOLPriceScreen = ({ history }) => {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <Row>
-          <Col>
-            <Table striped bordered hover variant="dark" size="sm">
-              <thead>
-                <tr>
-                  <th>頻道名稱</th>
-                  {quoteCategories.map((q) => (
-                    <th>{q}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {channels.map((channel) => (
+        <>
+          <Row>
+            <Col></Col>
+            <Col>
+              共 {channels.length} 筆資料, 已選取 {selectedChannels.length}{" "}
+              筆資料
+            </Col>
+
+            <Col>
+              <CSVLink
+                data={exportData()}
+                headers={csvHeaders}
+                filename={fileName + ".csv"}
+              >
+                <i className="fas fa-file-download"></i>
+                下載 csv檔案
+              </CSVLink>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Table striped bordered hover variant="dark" size="sm">
+                <thead>
                   <tr>
-                    <td>
-                      <Link to={`/quotes/kol/${channel._id}/view`}>
-                        {channel.thumbnails ? (
-                          <Image
-                            src={channel.thumbnails}
-                            roundedCircle
-                            style={{ width: "50px" }}
-                          />
-                        ) : (
-                          <i className="fas fa-user-alt"></i>
-                        )}
-
-                        <span className="ml-2 text-light">{channel.title}</span>
-                      </Link>
-
-                      {channel.socials?.youtube && (
-                        <a
-                          href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
-                          target="_blank"
-                        >
-                          <i className="fas fa-external-link-alt ml-2"></i>
-                        </a>
-                      )}
-                    </td>
-
-                    {quoteCategories.map((c) => (
-                      <td>
-                        {quotes
-                          .filter((q) => q._id.channel === channel._id)
-                          .map((q) => formatPrice(q, c))}
-                      </td>
+                    <th>頻道名稱</th>
+                    {quoteCategories.map((q) => (
+                      <th>{q}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
+                </thead>
+                <tbody>
+                  {channels.map((channel) => (
+                    <tr>
+                      <td>
+                        <Form.Check
+                          type="checkbox"
+                          inline="true"
+                          checked={selectedChannels.indexOf(channel._id) > -1}
+                          onChange={(e) =>
+                            e.target.checked
+                              ? setSelectedChannels([
+                                  ...selectedChannels,
+                                  channel._id,
+                                ])
+                              : setSelectedChannels(
+                                  selectedChannels.filter(
+                                    (sc) => sc !== channel._id
+                                  )
+                                )
+                          }
+                        />
+                        <Link to={`/quotes/kol/${channel._id}/view`}>
+                          {channel.thumbnails ? (
+                            <Image
+                              src={channel.thumbnails}
+                              roundedCircle
+                              style={{ width: "50px" }}
+                            />
+                          ) : (
+                            <i className="fas fa-user-alt"></i>
+                          )}
+
+                          <span className="ml-2 text-light">
+                            {channel.title}
+                          </span>
+                        </Link>
+
+                        {channel.socials?.youtube && (
+                          <a
+                            href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
+                            target="_blank"
+                          >
+                            <i className="fas fa-external-link-alt ml-2"></i>
+                          </a>
+                        )}
+                      </td>
+
+                      {quoteCategories.map((c) => (
+                        <td>
+                          {quotes
+                            .filter((q) => q._id.channel === channel._id)
+                            .map((q) => formatPrice(q, c))}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Col>
+          </Row>
+        </>
       )}
     </>
   );

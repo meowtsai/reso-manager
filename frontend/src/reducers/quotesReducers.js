@@ -298,7 +298,7 @@ export const socialDataDeleteReducer = (state = {}, action) => {
 };
 
 export const pricingListReducer = (
-  state = { quotes: [], channels: [], quoteItems: [] },
+  state = { quotes: [], channels: [], quoteItems: [], noxData: [] },
   action
 ) => {
   switch (action.type) {
@@ -310,6 +310,7 @@ export const pricingListReducer = (
         quotes: action.payload.quotes,
         channels: action.payload.channels,
         quoteItems: action.payload.quoteItems,
+        noxData: action.payload.noxData,
       };
     case PRICING_LIST_FAIL:
       return { loading: false, error: action.payload };

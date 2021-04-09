@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import Channel from "../../models/quotes/ChannelModel.js";
 import Quote from "../../models/quotes/QuoteModel.js";
 import QuoteItem from "../../models/quotes/QuoteItemModel.js";
+import NoxTrackingChannel from "../../models/quotes/NoxTrackingChannelModel.js";
 import Permission from "../../models/permissionModel.js";
 
 // @desc    return data for pricing page
@@ -10,6 +11,21 @@ import Permission from "../../models/permissionModel.js";
 const getDataForPricingPage = asyncHandler(async (req, res) => {
   const channels = await Channel.find();
   const quoteItems = await QuoteItem.find({});
+  const noxData = await NoxTrackingChannel.aggregate([
+    { $match: {} },
+    {
+      $group: {
+        _id: {
+          channel: "$channel",
+          lastThirtyVideoViews: "$lastThirtyVideoViews",
+          subscribers: "$subscribers",
+        },
+
+        latest: { $last: "$createdAt" },
+      },
+    },
+  ]);
+
   const quotes = await Quote.aggregate([
     { $match: {} },
     {
@@ -37,7 +53,7 @@ const getDataForPricingPage = asyncHandler(async (req, res) => {
   // ])
 
   if (channels && quotes) {
-    res.status(200).json({ channels, quotes, quoteItems });
+    res.status(200).json({ channels, quotes, quoteItems, noxData });
   } else {
     res.status(400);
     throw new Error("無法取得頻道");
