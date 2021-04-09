@@ -407,7 +407,7 @@ const KOLDetailPageScreen = ({ history, match }) => {
                             </small>
                           </div>
                         </ListGroup.Item>
-                        <ListGroup.Item>
+                        {/* <ListGroup.Item>
                           <div>
                             <h6>近30支影片按讚數</h6>
                             <small className="text-muted">
@@ -433,7 +433,7 @@ const KOLDetailPageScreen = ({ history, match }) => {
                               {channel.noxData.averageViews}
                             </small>
                           </div>
-                        </ListGroup.Item>
+                        </ListGroup.Item> */}
                         <ListGroup.Item>
                           <div>
                             <h6>開啟nox分析報告</h6>
@@ -447,6 +447,16 @@ const KOLDetailPageScreen = ({ history, match }) => {
                                   <i className="fas fa-external-link-alt ml-2"></i>
                                 </a>
                               )}
+                            </small>
+                          </div>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <div>
+                            <h6>資訊更新時間</h6>
+                            <small className="text-muted">
+                              {DateTime.fromISO(
+                                channel.noxData.createdAt
+                              ).toFormat("yyyy-MM-dd hh:mm:ss")}
                             </small>
                           </div>
                         </ListGroup.Item>
