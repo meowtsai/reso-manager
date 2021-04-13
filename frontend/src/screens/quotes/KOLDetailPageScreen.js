@@ -496,37 +496,41 @@ const KOLDetailPageScreen = ({ history, match }) => {
                     </thead>
                     <tbody>
                       {socialDataRecords &&
-                        socialDataRecords.map((s) => (
-                          <tr>
-                            {" "}
-                            <td>
-                              {DateTime.fromISO(s.date).toFormat("yyyy-MM-dd")}
-                            </td>{" "}
-                            <td>{s.platform} </td> <td> {s.count}</td>
-                            <td>
-                              <Button
-                                variant="outline-primary"
-                                className="btn-sm"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedSocialDataRecord(s);
-                                  setShowSocialEditModal(true);
-                                }}
-                              >
-                                <i className="fas fa-edit"></i> 編輯
-                              </Button>
+                        socialDataRecords
+                          .sort((a, b) => new Date(b.date) - new Date(a.date))
+                          .map((s) => (
+                            <tr>
+                              {" "}
+                              <td>
+                                {DateTime.fromISO(s.date).toFormat(
+                                  "yyyy-MM-dd"
+                                )}
+                              </td>{" "}
+                              <td>{s.platform} </td> <td> {s.count}</td>
+                              <td>
+                                <Button
+                                  variant="outline-primary"
+                                  className="btn-sm"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedSocialDataRecord(s);
+                                    setShowSocialEditModal(true);
+                                  }}
+                                >
+                                  <i className="fas fa-edit"></i> 編輯
+                                </Button>
 
-                              <Button
-                                variant="outline-danger"
-                                className="btn-sm ml-2"
-                                size="sm"
-                                onClick={() => handleDeleteSocial(s._id)}
-                              >
-                                <i className="fas fa-trash"></i> 刪除
-                              </Button>
-                            </td>{" "}
-                          </tr>
-                        ))}
+                                <Button
+                                  variant="outline-danger"
+                                  className="btn-sm ml-2"
+                                  size="sm"
+                                  onClick={() => handleDeleteSocial(s._id)}
+                                >
+                                  <i className="fas fa-trash"></i> 刪除
+                                </Button>
+                              </td>{" "}
+                            </tr>
+                          ))}
                     </tbody>
                   </Table>
                 </Card.Body>

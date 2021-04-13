@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Row, Col, Image, Form } from "react-bootstrap";
+import { Table, Row, Col, Image, Form, Button } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { getPricingData } from "../../actions/quotesActions";
@@ -12,6 +12,12 @@ const QuotesKOLPriceScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const [selectedChannels, setSelectedChannels] = useState([]);
+  const [renderList, setRenderList] = useState([]);
+
+  const [sortByOption, setSortByOption] = useState({
+    key: "ytsubscriber",
+    value: "desc",
+  });
 
   const quoteCategories = [
     "直播",
@@ -42,6 +48,63 @@ const QuotesKOLPriceScreen = ({ history }) => {
     }
   }, [dispatch, history, userInfo]);
 
+  useEffect(() => {
+    let list = [];
+    //console.log("renderList", renderList);
+
+    if (channels.length > 0) {
+      for (let i = 0; i < channels.length; i++) {
+        const item = channels[i];
+
+        const record = {
+          _id: item._id,
+          title: item.title,
+          thumbnails: item.thumbnails,
+        };
+
+        const quote = quotes.filter((q) => q._id.channel === item._id);
+
+        record.socials = item.socials
+          ? Object.keys(item.socials)
+              .filter((key) => {
+                if (item.socials[key] && item.socials[key] !== "") {
+                  return true;
+                }
+              })
+              .map(
+                (key) =>
+                  ` ${key}: ${socials.filter((s) => s.id === key)[0].url}/${
+                    item.socials[key]
+                  }`
+              )
+              .join("\n")
+          : "";
+        const noxArray = noxData.filter((n) => n._id.channel === item._id);
+        record.ytsubscriber = noxArray.length && noxArray[0]._id.subscribers;
+        record.lastThirtyVideoViews =
+          noxArray.length && noxArray[0]._id.lastThirtyVideoViews;
+
+        quoteCategories.forEach((c, i) => {
+          record["item" + (i + 1)] = quote
+            .map((q) => formatPrice(q, c, 2))
+            .filter((a) => a !== null)
+            .join("\n");
+        });
+
+        list.push(record);
+      }
+      // list = list.sort((a, b) =>
+      //   sortByOption.value === "desc"
+      //     ? b[sortByOption.key] - a[sortByOption.key]
+      //     : a[sortByOption.key] - b[sortByOption.key]
+      // );
+    }
+
+    //  (sortByOption
+
+    setRenderList(list);
+  }, [channels, sortByOption]);
+
   const formatPrice = (quoteData, category, option = 1) => {
     const item = quoteItems.filter((qi) => qi._id === quoteData._id.item)[0];
 
@@ -69,47 +132,10 @@ const QuotesKOLPriceScreen = ({ history }) => {
   };
 
   const exportData = () => {
-    let rtnData = [];
-    for (let i = 0; i < channels.length; i++) {
-      const item = channels[i];
-      if (selectedChannels.indexOf(item._id) > -1) {
-        const record = {
-          _id: item._id,
-          title: item.title,
-        };
-        const noxArray = noxData.filter((n) => n._id.channel === item._id);
-        const quote = quotes.filter((q) => q._id.channel === item._id);
+    let rtnData = renderList.map(
+      (item) => selectedChannels.indexOf(item._id) > -1
+    );
 
-        record.socials = item.socials
-          ? Object.keys(item.socials)
-              .filter((key) => {
-                if (item.socials[key] && item.socials[key] !== "") {
-                  return true;
-                }
-              })
-              .map(
-                (key) =>
-                  ` ${key}: ${socials.filter((s) => s.id === key)[0].url}/${
-                    item.socials[key]
-                  }`
-              )
-              .join("\n")
-          : "";
-
-        record.ytsubscriber = noxArray.length && noxArray[0]._id.subscribers;
-        record.lastThirtyVideoViews =
-          noxArray.length && noxArray[0]._id.lastThirtyVideoViews;
-
-        quoteCategories.forEach((c, i) => {
-          record["item" + (i + 1)] = quote
-            .map((q) => formatPrice(q, c, 2))
-            .filter((a) => a !== null)
-            .join("\n");
-        });
-
-        rtnData.push(record);
-      }
-    }
     return rtnData;
   };
 
@@ -155,14 +181,16 @@ const QuotesKOLPriceScreen = ({ history }) => {
             </Col>
 
             <Col>
-              <CSVLink
-                data={exportData()}
-                headers={csvHeaders}
-                filename={fileName + ".csv"}
-              >
-                <i className="fas fa-file-download"></i>
-                下載 csv檔案
-              </CSVLink>
+              {selectedChannels.length > 0 && (
+                <CSVLink
+                  data={exportData()}
+                  headers={csvHeaders}
+                  filename={fileName + ".csv"}
+                >
+                  <i className="fas fa-file-download"></i>
+                  下載選取頻道的 csv 檔案
+                </CSVLink>
+              )}
             </Col>
           </Row>
           <Row>
@@ -171,67 +199,121 @@ const QuotesKOLPriceScreen = ({ history }) => {
                 <thead>
                   <tr>
                     <th>頻道名稱</th>
+                    <th>
+                      {" "}
+                      <Button
+                        variant="outline-primary"
+                        onClick={(e) =>
+                          setSortByOption({
+                            key: "ytsubscriber",
+                            value:
+                              sortByOption.value === "asc" ? "desc" : "asc",
+                          })
+                        }
+                      >
+                        粉絲
+                        {sortByOption.key === "ytsubscriber" ? (
+                          sortByOption.value === "asc" ? (
+                            <i className="fas fa-sort-up ml-2"></i>
+                          ) : (
+                            <i className="fas fa-sort-down ml-2"></i>
+                          )
+                        ) : null}
+                      </Button>{" "}
+                    </th>
+                    <th>
+                      <Button
+                        variant="outline-primary"
+                        onClick={(e) =>
+                          setSortByOption({
+                            key: "lastThirtyVideoViews",
+                            value:
+                              sortByOption.value === "asc" ? "desc" : "asc",
+                          })
+                        }
+                      >
+                        平均觀看
+                        {sortByOption.key === "lastThirtyVideoViews" ? (
+                          sortByOption.value === "asc" ? (
+                            <i className="fas fa-sort-up ml-2"></i>
+                          ) : (
+                            <i className="fas fa-sort-down ml-2"></i>
+                          )
+                        ) : null}
+                      </Button>{" "}
+                    </th>
                     {quoteCategories.map((q) => (
                       <th>{q}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {channels.map((channel) => (
-                    <tr>
-                      <td>
-                        <Form.Check
-                          type="checkbox"
-                          inline="true"
-                          checked={selectedChannels.indexOf(channel._id) > -1}
-                          onChange={(e) =>
-                            e.target.checked
-                              ? setSelectedChannels([
-                                  ...selectedChannels,
-                                  channel._id,
-                                ])
-                              : setSelectedChannels(
-                                  selectedChannels.filter(
-                                    (sc) => sc !== channel._id
-                                  )
-                                )
-                          }
-                        />
-                        <Link to={`/quotes/kol/${channel._id}/view`}>
-                          {channel.thumbnails ? (
-                            <Image
-                              src={channel.thumbnails}
-                              roundedCircle
-                              style={{ width: "50px" }}
-                            />
-                          ) : (
-                            <i className="fas fa-user-alt"></i>
-                          )}
-
-                          <span className="ml-2 text-light">
-                            {channel.title}
-                          </span>
-                        </Link>
-
-                        {channel.socials?.youtube && (
-                          <a
-                            href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
-                            target="_blank"
-                          >
-                            <i className="fas fa-external-link-alt ml-2"></i>
-                          </a>
-                        )}
-                      </td>
-
-                      {quoteCategories.map((c) => (
+                  {renderList
+                    .sort((a, b) =>
+                      sortByOption.value === "desc"
+                        ? b[sortByOption.key] - a[sortByOption.key]
+                        : a[sortByOption.key] - b[sortByOption.key]
+                    )
+                    .map((channel) => (
+                      <tr>
                         <td>
-                          {quotes
-                            .filter((q) => q._id.channel === channel._id)
-                            .map((q) => formatPrice(q, c))}
+                          <Form.Check
+                            type="checkbox"
+                            inline="true"
+                            checked={selectedChannels.indexOf(channel._id) > -1}
+                            onChange={(e) =>
+                              e.target.checked
+                                ? setSelectedChannels([
+                                    ...selectedChannels,
+                                    channel._id,
+                                  ])
+                                : setSelectedChannels(
+                                    selectedChannels.filter(
+                                      (sc) => sc !== channel._id
+                                    )
+                                  )
+                            }
+                          />
+                          <Link to={`/quotes/kol/${channel._id}/view`}>
+                            {channel.thumbnails ? (
+                              <Image
+                                src={channel.thumbnails}
+                                roundedCircle
+                                style={{ width: "50px" }}
+                              />
+                            ) : (
+                              <i className="fas fa-user-alt"></i>
+                            )}
+
+                            <span className="ml-2 text-light">
+                              {channel.title}
+                            </span>
+                          </Link>
+
+                          {channel.socials?.youtube && (
+                            <a
+                              href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
+                              target="_blank"
+                            >
+                              <i className="fas fa-external-link-alt ml-2"></i>
+                            </a>
+                          )}
                         </td>
-                      ))}
-                    </tr>
-                  ))}
+                        <td className="text-right">
+                          {channel.ytsubscriber.toLocaleString()}
+                        </td>
+                        <td className="text-right">
+                          {channel.lastThirtyVideoViews.toLocaleString()}
+                        </td>
+                        {quoteCategories.map((c) => (
+                          <td>
+                            {quotes
+                              .filter((q) => q._id.channel === channel._id)
+                              .map((q) => formatPrice(q, c))}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
             </Col>

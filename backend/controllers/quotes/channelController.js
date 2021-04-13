@@ -93,13 +93,13 @@ const updateChannel = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
 
   if (channel) {
-    channel.title = req.body.title;
-    channel.area = req.body.area;
-    channel.categories = req.body.categories;
-    channel.socials = req.body.socials;
-    channel.intro = req.body.intro;
-    channel.note = req.body.note;
-    channel.status = req.body.status;
+    channel.title = req.body.title ?? channel.title;
+    channel.area = req.body.area ?? channel.area;
+    channel.categories = req.body.categories ?? channel.categories;
+    channel.socials = req.body.socials ?? channel.socials;
+    channel.intro = req.body.intro ?? channel.intro;
+    channel.note = req.body.note ?? channel.note;
+    channel.status = req.body.status ?? channel.status;
 
     const updatedChannel = await channel.save();
 

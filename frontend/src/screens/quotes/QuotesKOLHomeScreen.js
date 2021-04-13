@@ -1,11 +1,21 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
-import { Table, Row, Col, Image, Button, Form, Badge } from "react-bootstrap";
+import {
+  Table,
+  Row,
+  Col,
+  Image,
+  Button,
+  Form,
+  Badge,
+  Toast,
+} from "react-bootstrap";
 import {
   listCategories,
   listChannels,
   listTags,
+  updateChannel,
 } from "../../actions/quotesActions";
 
 import { LinkContainer } from "react-router-bootstrap";
@@ -34,6 +44,13 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
   const tagsList = useSelector((state) => state.tagsList);
   const { loading: tagsLoading, tags } = tagsList;
 
+  const channelUpdate = useSelector((state) => state.channelUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = channelUpdate;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   //const [show, setShow] = useState(false);
@@ -42,6 +59,9 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [title, setTitle] = useState("");
+
+  const [channelStatus, setChannelStatus] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (userInfo) {
@@ -74,8 +94,29 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
     }
   }, [channelList]);
 
-  const haltHandler = (mentor_id, mentor_title) => {
-    window.confirm(`要暫時停止追蹤[${mentor_title}]這個頻道嗎? `);
+  useEffect(() => {
+    if (successUpdate) {
+      setShowToast(true);
+      dispatch(listChannels(tagId));
+    }
+  }, [successUpdate]);
+
+  const haltHandler = (channelId, channelTitle, changeStatus) => {
+    if (
+      window.confirm(
+        `要${
+          changeStatus === 2 ? "暫時停止追蹤" : "開始追蹤"
+        }[${channelTitle}]這個頻道嗎? `
+      )
+    ) {
+      const data = {
+        _id: channelId,
+        status: changeStatus,
+      };
+      setChannelStatus({ ...data, title: channelTitle });
+
+      dispatch(updateChannel(data));
+    }
   };
 
   const search = () => {
@@ -86,7 +127,10 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
       );
     }
     if (status !== "") {
-      filteredarray = filteredarray.filter((item) => item.status === status);
+      console.log("status", Number.parseInt(status));
+      filteredarray = filteredarray.filter(
+        (item) => item.status === Number.parseInt(status)
+      );
     }
 
     // console.log("filteredarray", filteredarray);
@@ -113,6 +157,31 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
             </Link>
           )}
 
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            style={{
+              position: "relative",
+              minHeight: "100px",
+            }}
+          >
+            <Toast
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+              }}
+              onClose={() => setShowToast(false)}
+              show={showToast}
+              delay={3000}
+              autohide
+            >
+              <Toast.Header>
+                <strong className="mr-auto">系統訊息</strong>
+              </Toast.Header>
+              <Toast.Body>{channelStatus?.title} 追蹤狀態修改成功</Toast.Body>
+            </Toast>
+          </div>
           <Row>
             <Col>
               <Form className="mb-3">
@@ -139,6 +208,18 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                   <Col xs="auto">
                     <Button type="button" onClick={search}>
                       OK
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      type="button"
+                      className="ml-1"
+                      onClick={(e) => {
+                        setSearchKeyWord("");
+                        setStatus("");
+                        setRenderList(channels);
+                      }}
+                    >
+                      Clear
                     </Button>
                   </Col>
                 </Form.Row>
@@ -258,16 +339,29 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                               <i className="fas fa-edit"></i>
                             </Button>
                           </LinkContainer>
-                          <Button
-                            variant="warning"
-                            className="btn-sm ml-2"
-                            size="sm"
-                            onClick={() =>
-                              haltHandler(channel._id, channel.title)
-                            }
-                          >
-                            <i className="fas fa-ban"></i>
-                          </Button>
+                          {channel.status === 1 ? (
+                            <Button
+                              variant="warning"
+                              className="btn-sm ml-2"
+                              size="sm"
+                              onClick={() =>
+                                haltHandler(channel._id, channel.title, 2)
+                              }
+                            >
+                              <i className="fas fa-ban"></i>
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="secondary"
+                              className="btn-sm ml-2"
+                              size="sm"
+                              onClick={() =>
+                                haltHandler(channel._id, channel.title, 1)
+                              }
+                            >
+                              <i className="fas fa-plus"></i>
+                            </Button>
+                          )}
                         </td>
                       </tr>
                     ))}
