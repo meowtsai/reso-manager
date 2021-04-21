@@ -80,9 +80,9 @@ const QuotesKOLPriceScreen = ({ history }) => {
               .join("\n")
           : "";
         const noxArray = noxData.filter((n) => n._id.channel === item._id);
-        record.ytsubscriber = noxArray.length && noxArray[0]._id.subscribers;
+        record.ytsubscriber = noxArray.length && noxArray[0].subscribers;
         record.lastThirtyVideoViews =
-          noxArray.length && noxArray[0]._id.lastThirtyVideoViews;
+          noxArray.length && noxArray[0].lastThirtyVideoViews;
 
         quoteCategories.forEach((c, i) => {
           record["item" + (i + 1)] = quote

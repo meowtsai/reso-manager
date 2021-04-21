@@ -17,11 +17,10 @@ const getDataForPricingPage = asyncHandler(async (req, res) => {
       $group: {
         _id: {
           channel: "$channel",
-          lastThirtyVideoViews: "$lastThirtyVideoViews",
-          subscribers: "$subscribers",
         },
-
-        latest: { $last: "$createdAt" },
+        subscribers: { $last: "$subscribers" },
+        lastThirtyVideoViews: { $last: "$lastThirtyVideoViews" },
+        date: { $last: "$createdAt" },
       },
     },
   ]);
@@ -52,6 +51,7 @@ const getDataForPricingPage = asyncHandler(async (req, res) => {
   //     { $sort: { item: 1, date: 1 } },
   // ])
 
+  console.log("noxData", noxData);
   if (channels && quotes) {
     res.status(200).json({ channels, quotes, quoteItems, noxData });
   } else {
