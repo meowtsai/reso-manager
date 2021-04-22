@@ -50,7 +50,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
 
   useEffect(() => {
     let list = [];
-    //console.log("renderList", renderList);
+    console.log("renderList", renderList);
 
     if (channels.length > 0) {
       for (let i = 0; i < channels.length; i++) {
@@ -80,6 +80,9 @@ const QuotesKOLPriceScreen = ({ history }) => {
               .join("\n")
           : "";
         const noxArray = noxData.filter((n) => n._id.channel === item._id);
+        record.noxUrl = item.socials?.youtube
+          ? `https://tw.noxinfluencer.com/youtube/channel/${item.socials.youtube}`
+          : null;
         record.ytsubscriber = noxArray.length && noxArray[0].subscribers;
         record.lastThirtyVideoViews =
           noxArray.length && noxArray[0].lastThirtyVideoViews;
@@ -132,7 +135,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
   };
 
   const exportData = () => {
-    let rtnData = renderList.map(
+    let rtnData = renderList.filter(
       (item) => selectedChannels.indexOf(item._id) > -1
     );
 
@@ -195,7 +198,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
           </Row>
           <Row>
             <Col>
-              <Table striped bordered hover variant="dark" size="sm">
+              <Table striped bordered hover size="sm">
                 <thead>
                   <tr>
                     <th>頻道名稱</th>
@@ -255,7 +258,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
                         : a[sortByOption.key] - b[sortByOption.key]
                     )
                     .map((channel) => (
-                      <tr>
+                      <tr key={`tr_${channel._id}`}>
                         <td>
                           <Form.Check
                             type="checkbox"
@@ -285,16 +288,11 @@ const QuotesKOLPriceScreen = ({ history }) => {
                               <i className="fas fa-user-alt"></i>
                             )}
 
-                            <span className="ml-2 text-light">
-                              {channel.title}
-                            </span>
+                            <span className="ml-2 ">{channel.title}</span>
                           </Link>
 
-                          {channel.socials?.youtube && (
-                            <a
-                              href={`https://tw.noxinfluencer.com/youtube/channel/${channel.socials.youtube}`}
-                              target="_blank"
-                            >
+                          {channel.noxUrl && (
+                            <a href={channel.noxUrl} target="_blank">
                               <i className="fas fa-external-link-alt ml-2"></i>
                             </a>
                           )}
@@ -305,8 +303,8 @@ const QuotesKOLPriceScreen = ({ history }) => {
                         <td className="text-right">
                           {channel.lastThirtyVideoViews.toLocaleString()}
                         </td>
-                        {quoteCategories.map((c) => (
-                          <td>
+                        {quoteCategories.map((c, i) => (
+                          <td key={`tdcate_${i}`}>
                             {quotes
                               .filter((q) => q._id.channel === channel._id)
                               .map((q) => formatPrice(q, c))}

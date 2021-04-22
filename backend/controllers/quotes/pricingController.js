@@ -51,7 +51,7 @@ const getDataForPricingPage = asyncHandler(async (req, res) => {
   //     { $sort: { item: 1, date: 1 } },
   // ])
 
-  console.log("noxData", noxData);
+  //console.log("noxData", noxData);
   if (channels && quotes) {
     res.status(200).json({ channels, quotes, quoteItems, noxData });
   } else {
