@@ -171,7 +171,6 @@ const deleteChannel = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
 
   if (channel) {
-    deleteOne;
     const cR = await Channel.deleteOne({ _id: req.params.id });
     //console.log("cr", cR);
     const qR = await Quote.remove({ channel: channel._id });
