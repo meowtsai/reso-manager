@@ -33,6 +33,7 @@ import KOLCreateScreen from "./screens/quotes/KOLCreateScreen";
 import KOLEditScreen from "./screens/quotes/KOLEditScreen";
 import KOLDetailPageScreen from "./screens/quotes/KOLDetailPageScreen";
 import QuotesKOLPriceScreen from "./screens/quotes/QuotesKOLPriceScreen";
+import KOLQueryScreen from "./screens/quotes/KOLQueryScreen";
 
 const App = () => {
   return (
@@ -101,6 +102,7 @@ const App = () => {
           <Route path="/quotes/kol/create" component={KOLCreateScreen} />
           <Route path="/quotes/kol/:id/edit" component={KOLEditScreen} />
           <Route path="/quotes/kol/:id/view" component={KOLDetailPageScreen} />
+          <Route path="/quotes/kol/query" component={KOLQueryScreen} />
         </Container>
       </main>
       <Footer />

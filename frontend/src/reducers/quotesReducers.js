@@ -8,6 +8,9 @@ import {
   CHANNEL_CREATE_REQUEST,
   CHANNEL_CREATE_SUCCESS,
   CHANNEL_CREATE_FAIL,
+  CHANNEL_DELETE_REQUEST,
+  CHANNEL_DELETE_SUCCESS,
+  CHANNEL_DELETE_FAIL,
   CHANNEL_LIST_REQUEST,
   CHANNEL_LIST_SUCCESS,
   CHANNEL_LIST_FAIL,
@@ -111,6 +114,19 @@ export const channelCreateReducer = (state = {}, action) => {
     case CHANNEL_CREATE_SUCCESS:
       return { loading: false, channel: action.payload };
     case CHANNEL_CREATE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const channelDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CHANNEL_DELETE_REQUEST:
+      return { loading: true };
+    case CHANNEL_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case CHANNEL_DELETE_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

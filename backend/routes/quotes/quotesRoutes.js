@@ -16,6 +16,7 @@ import {
   getChannelById,
   updateChannel,
   updateChannelTags,
+  deleteChannel,
 } from "../../controllers/quotes/channelController.js";
 import {
   createSocialData,
@@ -37,7 +38,11 @@ router.route("/socialmedias").get(getSocialMedias);
 
 router.route("/categories").get(getCategories);
 router.route("/channel").get(getChannels).post(createChannel);
-router.route("/channel/:id").get(getChannelById).put(updateChannel);
+router
+  .route("/channel/:id")
+  .get(getChannelById)
+  .put(updateChannel)
+  .delete(deleteChannel);
 
 router.route("/").get(getQuotes).post(createQuote);
 router

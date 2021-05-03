@@ -9,6 +9,9 @@ import {
   CHANNEL_CREATE_REQUEST,
   CHANNEL_CREATE_SUCCESS,
   CHANNEL_CREATE_FAIL,
+  CHANNEL_DELETE_REQUEST,
+  CHANNEL_DELETE_SUCCESS,
+  CHANNEL_DELETE_FAIL,
   CHANNEL_LIST_REQUEST,
   CHANNEL_LIST_SUCCESS,
   CHANNEL_LIST_FAIL,
@@ -739,6 +742,40 @@ export const getPricingData = (condition) => async (dispatch, getState) => {
     }
     dispatch({
       type: PRICING_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const deleteChannel = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CHANNEL_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/quotes/channel/${id}`, config);
+
+    dispatch({ type: CHANNEL_DELETE_SUCCESS });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: CHANNEL_DELETE_FAIL,
       payload: message,
     });
   }

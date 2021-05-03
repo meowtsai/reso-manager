@@ -12,6 +12,8 @@ const QuotesKOLPriceScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const [selectedChannels, setSelectedChannels] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+
   const [renderList, setRenderList] = useState([]);
 
   const [sortByOption, setSortByOption] = useState({
@@ -50,7 +52,6 @@ const QuotesKOLPriceScreen = ({ history }) => {
 
   useEffect(() => {
     let list = [];
-    console.log("renderList", renderList);
 
     if (channels.length > 0) {
       for (let i = 0; i < channels.length; i++) {
@@ -116,7 +117,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
         return option === 1 ? (
           <div>
             {" "}
-            <i className={`fab fa-${item.platform} mr-2 text-light`}></i>{" "}
+            <i className={`fab fa-${item.platform} mr-2 social-icon`}></i>{" "}
             {quoteData.latest}{" "}
           </div>
         ) : (
@@ -201,7 +202,25 @@ const QuotesKOLPriceScreen = ({ history }) => {
               <Table striped bordered hover size="sm">
                 <thead>
                   <tr>
-                    <th>頻道名稱</th>
+                    <th>
+                      <Form.Check
+                        type="checkbox"
+                        inline="true"
+                        checked={selectAll}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedChannels(
+                              renderList.map((item) => item._id)
+                            );
+                          } else {
+                            setSelectedChannels([]);
+                          }
+
+                          setSelectAll(e.target.checked);
+                        }}
+                      />
+                      頻道名稱
+                    </th>
                     <th>
                       {" "}
                       <Button
@@ -285,7 +304,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
                                 style={{ width: "50px" }}
                               />
                             ) : (
-                              <i className="fas fa-user-alt"></i>
+                              <i className="fas fa-user-alt img-placeholder"></i>
                             )}
 
                             <span className="ml-2 ">{channel.title}</span>

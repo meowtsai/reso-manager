@@ -44,6 +44,9 @@ const Header = () => {
                     <LinkContainer to="/quotes/kol/price">
                       <NavDropdown.Item>KOL報價</NavDropdown.Item>
                     </LinkContainer>
+                    {/* <LinkContainer to="/quotes/kol/query">
+                      <NavDropdown.Item>KOL查詢</NavDropdown.Item>
+                    </LinkContainer> */}
                   </NavDropdown>
                 )}
 

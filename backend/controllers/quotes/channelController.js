@@ -1,7 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Channel from "../../models/quotes/ChannelModel.js";
+import Quote from "../../models/quotes/QuoteModel.js";
 import Permission from "../../models/permissionModel.js";
 import NoxTrackingChannel from "../../models/quotes/NoxTrackingChannelModel.js";
+import SocialData from "../../models/quotes/SocialDataModel.js";
 
 import Tag from "../../models/quotes/TagModel.js";
 
@@ -162,10 +164,35 @@ const updateChannelTags = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete a quote record
+// @route   DELETE /api/quotes/detail/:id
+// @access  Private
+const deleteChannel = asyncHandler(async (req, res) => {
+  const channel = await Channel.findById(req.params.id);
+
+  if (channel) {
+    deleteOne;
+    const cR = await Channel.deleteOne({ _id: req.params.id });
+    //console.log("cr", cR);
+    const qR = await Quote.remove({ channel: channel._id });
+    //console.log("qR", qR);
+    const nR = await NoxTrackingChannel.remove({ channel: channel._id });
+    //console.log("nR", nR);
+    const sR = await SocialData.remove({ channel: channel._id });
+    //console.log("sR", sR);
+
+    res.json({ message: "channel removed" });
+  } else {
+    res.status(404);
+    throw new Error("channel not found");
+  }
+});
+
 export {
   getChannels,
   createChannel,
   getChannelById,
   updateChannel,
   updateChannelTags,
+  deleteChannel,
 };

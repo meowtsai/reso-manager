@@ -1,4 +1,3 @@
-import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DateTime } from "luxon";
 import {
@@ -24,7 +23,7 @@ import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Paginate from "../../components/Paginate";
 import { socials, areaConfig } from "./quotesConfig";
-
+import React, { Fragment, useEffect, useState } from "react";
 const statusList = {
   1: { text: "追蹤中", color: "success" },
   2: { text: "暫停追蹤", color: "secondary" },
@@ -271,7 +270,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                                 style={{ width: "50px" }}
                               />
                             ) : (
-                              <i className="fas fa-user-alt"></i>
+                              <i className="fas fa-user-alt img-placeholder"></i>
                             )}
 
                             <span className="ml-2">{channel.title}</span>
@@ -339,7 +338,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                               <i className="fas fa-edit"></i>
                             </Button>
                           </LinkContainer>
-                          {channel.status === 1 ? (
+                          {/* {channel.status === 1 ? (
                             <Button
                               variant="warning"
                               className="btn-sm ml-2"
@@ -361,7 +360,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                             >
                               <i className="fas fa-plus"></i>
                             </Button>
-                          )}
+                          )} */}
                         </td>
                       </tr>
                     ))}
