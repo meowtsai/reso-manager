@@ -32,7 +32,7 @@ const statusList = {
 const QuotesKOLHomeScreen = ({ history, match }) => {
   const tagId = match.params.tagid;
   const [searchKeyword, setSearchKeyWord] = useState("");
-  const [status, setStatus] = useState("");
+  //const [status, setStatus] = useState("");
   const [renderList, setRenderList] = useState([]);
   const dispatch = useDispatch();
   const channelList = useSelector((state) => state.channelList);
@@ -125,12 +125,12 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
         (item) => item.title.indexOf(searchKeyword) > -1
       );
     }
-    if (status !== "") {
-      console.log("status", Number.parseInt(status));
-      filteredarray = filteredarray.filter(
-        (item) => item.status === Number.parseInt(status)
-      );
-    }
+    // if (status !== "") {
+    //   console.log("status", Number.parseInt(status));
+    //   filteredarray = filteredarray.filter(
+    //     (item) => item.status === Number.parseInt(status)
+    //   );
+    // }
 
     // console.log("filteredarray", filteredarray);
 
@@ -156,7 +156,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
             </Link>
           )}
 
-          <div
+          {/* <div
             aria-live="polite"
             aria-atomic="true"
             style={{
@@ -180,23 +180,11 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
               </Toast.Header>
               <Toast.Body>{channelStatus?.title} 追蹤狀態修改成功</Toast.Body>
             </Toast>
-          </div>
+          </div> */}
           <Row>
             <Col>
               <Form className="mb-3">
                 <Form.Row className="align-items-center">
-                  <Col xs="auto">
-                    <Form.Control
-                      as="select"
-                      custom
-                      onChange={(e) => setStatus(e.target.value)}
-                    >
-                      <option value="">所有</option>
-                      {Object.keys(statusList).map((skey) => (
-                        <option value={skey}>{statusList[skey].text}</option>
-                      ))}
-                    </Form.Control>
-                  </Col>
                   <Col xs="auto">
                     <Form.Control
                       placeholder="關鍵字搜尋"
@@ -206,19 +194,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                   </Col>
                   <Col xs="auto">
                     <Button type="button" onClick={search}>
-                      OK
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      type="button"
-                      className="ml-1"
-                      onClick={(e) => {
-                        setSearchKeyWord("");
-                        setStatus("");
-                        setRenderList(channels);
-                      }}
-                    >
-                      Clear
+                      搜尋
                     </Button>
                   </Col>
                 </Form.Row>
@@ -245,12 +221,12 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                 <thead>
                   <tr>
                     <th>頻道名稱</th>
-                    <th>社交平台</th>
-                    <th>類型</th>
-                    <th>標籤</th>
-                    <th>簡介</th>
-                    <th>區域</th>
-                    <th>操作</th>
+                    <th style={{ width: "120px" }}>社交平台</th>
+                    <th style={{ width: "60px" }}>類型</th>
+                    <th style={{ width: "230px" }}>標籤</th>
+                    <th style={{ width: "200px" }}>簡介</th>
+                    <th style={{ width: "60px" }}>區域</th>
+                    <th style={{ width: "50px" }}>操作</th>
                   </tr>
                 </thead>
                 <tbody>
