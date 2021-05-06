@@ -75,3 +75,8 @@ table thead th {
 .social-icon {
   color: #4d5656;
 }
+
+pre {
+  white-space: pre-wrap;
+  word-break: keep-all;
+}

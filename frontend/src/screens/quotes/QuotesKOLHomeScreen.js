@@ -187,7 +187,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                 <Form.Row className="align-items-center">
                   <Col xs="auto">
                     <Form.Control
-                      placeholder="關鍵字搜尋"
+                      placeholder="頻道名稱搜尋"
                       value={searchKeyword}
                       onChange={(e) => setSearchKeyWord(e.target.value)}
                     />
@@ -220,13 +220,21 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>頻道名稱</th>
-                    <th style={{ width: "120px" }}>社交平台</th>
-                    <th style={{ width: "60px" }}>類型</th>
-                    <th style={{ width: "230px" }}>標籤</th>
-                    <th style={{ width: "200px" }}>簡介</th>
-                    <th style={{ width: "60px" }}>區域</th>
-                    <th style={{ width: "50px" }}>操作</th>
+                    <th style={{ textAlign: "center" }}>頻道名稱</th>
+                    <th style={{ width: "120px", textAlign: "center" }}>
+                      社交平台
+                    </th>
+                    <th style={{ width: "100px", textAlign: "center" }}>
+                      類型
+                    </th>
+                    <th style={{ width: "230px", textAlign: "center" }}>
+                      標籤
+                    </th>
+                    <th style={{ width: "200px", textAlign: "center" }}>
+                      簡介
+                    </th>
+                    <th style={{ width: "60px", textAlign: "center" }}>區域</th>
+                    <th style={{ width: "50px", textAlign: "center" }}>操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -295,8 +303,20 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                             );
                           })}
                         </td>
-                        <td title={channel.intro}>
-                          <pre>{channel.intro?.substring(0, 20)}</pre>
+                        <td title={channel.intro} className="mb-0">
+                          <pre>
+                            {channel.intro && channel.intro.indexOf("\n") > 0
+                              ? channel.intro.substring(
+                                  0,
+                                  channel.intro.indexOf(
+                                    "\n",
+                                    channel.intro.indexOf("\n") + 1
+                                  )
+                                )
+                              : channel.intro}
+
+                            {/* {channel.intro?.substring(0, 20)}*/}
+                          </pre>
                         </td>
                         <td>
                           {
