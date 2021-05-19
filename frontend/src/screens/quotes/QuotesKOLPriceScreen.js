@@ -85,8 +85,8 @@ const QuotesKOLPriceScreen = ({ history }) => {
           ? `https://tw.noxinfluencer.com/youtube/channel/${item.socials.youtube}`
           : null;
         record.ytsubscriber = noxArray.length && noxArray[0].subscribers;
-        record.lastThirtyVideoViews =
-          noxArray.length && noxArray[0].lastThirtyVideoViews;
+        record.estimateViews =
+          noxArray.length && noxArray[0].estimateViews;
 
         quoteCategories.forEach((c, i) => {
           record["item" + (i + 1)] = quote
@@ -317,10 +317,10 @@ const QuotesKOLPriceScreen = ({ history }) => {
                           )}
                         </td>
                         <td className="text-right">
-                          {channel.ytsubscriber.toLocaleString()}
+                          {channel.ytsubscriber}
                         </td>
                         <td className="text-right">
-                          {channel.lastThirtyVideoViews.toLocaleString()}
+                          {channel.estimateViews}
                         </td>
                         {quoteCategories.map((c, i) => (
                           <td key={`tdcate_${i}`}>

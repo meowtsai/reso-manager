@@ -15,9 +15,7 @@ const NoxTrackingChannelSchema = new mongoose.Schema(
     totalViews: {
       type: Number,
     },
-    averageViews: {
-      type: Number,
-    },
+ 
     categories: { type: Array, default: [] },
 
     thumbnails: {
@@ -34,7 +32,10 @@ const NoxTrackingChannelSchema = new mongoose.Schema(
     noxScore: {
       type: Number,
     },
-    estMonthEarning: {
+    estimateViews: {
+      type: Number,
+    },
+    estimatePrice: {
       type: Number,
     },
     subscriberRanking: {
@@ -43,31 +44,7 @@ const NoxTrackingChannelSchema = new mongoose.Schema(
     subscriberCountryRanking: {
       type: Number,
     },
-    lastThirtyVideoDisLikes: {
-      type: Number,
-    },
-    lastThirtyVideoLikes: {
-      type: Number,
-    },
-    estOneVideoEarning: {
-      type: Number,
-    },
-    estViewsPerVideo: {
-      type: Number,
-    },
-    lastThirtyVideoViews: {
-      type: Number,
-    },
-    socialContacts: [String],
-    registerYouTubeDate: {
-      type: String,
-    },
-    estMonthCPM: {
-      type: Number,
-    },
-    estOneVideoCPM: {
-      type: Number,
-    },
+    
   },
   {
     timestamps: true,
