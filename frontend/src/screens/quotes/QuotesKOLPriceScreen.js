@@ -154,10 +154,11 @@ const QuotesKOLPriceScreen = ({ history }) => {
     { label: "頻道訂閱數", key: "ytsubscriber" },
     { label: "近30支平均觀看", key: "lastThirtyVideoViews" },
     { label: "直播", key: "item1" },
-    { label: "影片", key: "item2" },
-    { label: "活動主持", key: "item3" },
-    { label: "活動出席", key: "item4" },
-    { label: "影片拍攝出席", key: "item5" },
+    { label: "貼文", key: "item2" },
+    { label: "影片", key: "item3" },
+    { label: "活動主持", key: "item4" },
+    { label: "活動出席", key: "item5" },
+    { label: "影片拍攝出席(抵達至收工)", key: "item6" },
   ];
 
   //   "_id": {
