@@ -16,6 +16,7 @@ import {
   listTags,
   updateChannel,
 } from "../../actions/quotesActions";
+import Select from 'react-select'
 
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
@@ -29,6 +30,28 @@ const statusList = {
   2: { text: "暫停追蹤", color: "secondary" },
 };
 
+
+const TagsSelect = ({tags,channels, onIdChange, currentId})=> {
+  let tmpList
+  //console.log(channels)
+  if (Array.isArray(tags) && Array.isArray(channels)) {
+    if (tags.length>0 && channels.length>0) {
+      tmpList = channels.filter(c=>c.tags.length>0).reduce( (prev, curr)=> ([...prev, ...curr.tags] ),[]);
+      //console.log("tmpList", tmpList)
+
+      const listItems = tags.map(t=> ({label:t.name, value:t._id, count: tmpList.filter(g=> g===t._id).length})).filter(c=> c.count!==0).sort((a,b)=> b.count- a.count).map(d =>({label:d.label + "("+d.count+")", value:d.value}))
+      return <Select defaultValue={listItems.filter(x=>x.value===currentId)[0]} onChange={(e)=>onIdChange(e.value) } options={listItems}  />
+    }
+    else 
+    {
+      return null
+    }
+    
+  }
+  else {
+    return null
+  }
+}
 const QuotesKOLHomeScreen = ({ history, match }) => {
   const tagId = match.params.tagid;
   const [searchKeyword, setSearchKeyWord] = useState("");
@@ -91,6 +114,9 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
       setPages(Math.ceil(channels.length / pageSize));
       setRenderList(channels);
     }
+    
+   
+    
   }, [channelList]);
 
   useEffect(() => {
@@ -118,6 +144,10 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
     }
   };
 
+  const tagChange=(id)=>{
+    history.push(`/quotes/kol/${id}/tag`);
+  }
+
   const search = () => {
     let filteredarray = channels;
     if (searchKeyword !== "") {
@@ -136,6 +166,8 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
 
     setRenderList(filteredarray);
   };
+
+  
 
   return (
     <>
@@ -191,6 +223,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                       value={searchKeyword}
                       onChange={(e) => setSearchKeyWord(e.target.value)}
                     />
+                   
                   </Col>
                   <Col xs="auto">
                     <Button type="button" onClick={search}>
@@ -199,6 +232,14 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                   </Col>
                 </Form.Row>
               </Form>
+            </Col>
+            
+            <Col>
+            <Row>
+              <Col xs={3} className="text-right">標籤</Col>
+              <Col xs={9}><TagsSelect tags={tags} channels={channels} onIdChange={(v)=>tagChange(v)} currentId={tagId} /></Col>
+            </Row>
+            
             </Col>
           </Row>
           <Row>
@@ -387,3 +428,5 @@ const ShowDuration = ({ pastDate }) => {
 };
 
 //service.noxinfluencer.com/nox/youtube/v1/channel/profile?noxKey=NOXKOLSar2JuqJC9GET9XXZ0RjDWekDg5b&channelId=UCwDBDW_zegBNl9BAWI3tyjw
+
+

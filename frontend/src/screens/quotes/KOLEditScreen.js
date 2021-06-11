@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Button, Col, InputGroup, Alert } from "react-bootstrap";
+import { Form, Button, Image, InputGroup, Alert } from "react-bootstrap";
 import {
   listCategories,
   getChannelDetail,
@@ -131,7 +131,7 @@ const KOLEditScreen = ({ history, match }) => {
       categories,
       status,
     };
-    console.log(data);
+    //console.log(data);
     dispatch(updateChannel(data));
   };
 
@@ -182,16 +182,16 @@ const KOLEditScreen = ({ history, match }) => {
                 {errors.channelName}
               </Form.Control.Feedback>
             </Form.Group>
-            {/* <Form.Group className="mb-4">
-              <Form.Label>狀態</Form.Label>
-              <Form.Check
-                type="switch"
-                id="status-switch"
-                checked={status}
-                onChange={(e) => setStatus(e.target.checked ? 1 : 0)}
-                label="啟用中"
-              />
-            </Form.Group> */}
+            <Form.Group className="mb-4">
+              <Form.Label>相片</Form.Label>
+              <p>
+                <Image
+                  src={channel.thumbnails}
+                  roundedCircle
+                  style={{ width: "80px" }}
+                />
+              </p>
+            </Form.Group>
             <Form.Group className="mb-4">
               <Form.Label>地區</Form.Label>
               <Form.Control

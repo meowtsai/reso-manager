@@ -19,6 +19,7 @@ import cosplayRoutes from "./routes/cosplayRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import kolRoutes from "./routes/kolRoutes.js";
 import quotesRoutes from "./routes/quotes/quotesRoutes.js";
+import fileUpload from "express-fileupload";
 
 dotenv.config();
 
@@ -31,6 +32,18 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use(express.json());
+
+app.use(
+  fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+    abortOnLimit: true,
+    responseOnLimit: "檔案太大",
+    limitHandler: function (req, res, next) {
+      //console.log("hi");
+      return res.status(413).send({ file01: "檔案太大" });
+    },
+  })
+);
 
 app.use("/api/users", userRoutes);
 app.use("/api/h55event", h55eventRoutes);
