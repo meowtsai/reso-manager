@@ -15,7 +15,7 @@ import {
 import FormContainer from "../../components/FormContainer";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-
+import Avatar from "../../components/Avatar";
 const KOLEditScreen = ({ history, match }) => {
   const channelId = match.params.id;
   const dispatch = useDispatch();
@@ -55,6 +55,7 @@ const KOLEditScreen = ({ history, match }) => {
   const [note, setNote] = useState("");
   const [status, setStatus] = useState(false);
   const [errors, setErrors] = useState({});
+  const [avatarFile,setAvatarFile] = useState("");
 
   useEffect(() => {
     if (successUpdate) {
@@ -100,6 +101,7 @@ const KOLEditScreen = ({ history, match }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+  
 
     //console.log(e.currentTarget.checkValidity());
     const validation = {};
@@ -110,11 +112,20 @@ const KOLEditScreen = ({ history, match }) => {
       validation.area = "請選擇地區";
     }
 
+    
+    if (avatarFile[0]){
+      if (avatarFile[0].size >1024*1024 ){
+        console.log(avatarFile[0].size > 1024*1024)
+        validation.avatarFile = "檔案大小必須在1MB內";
+      }
+    }
+
     if (Object.keys(validation).length > 0) {
       setErrors(validation);
       return;
     }
 
+ 
     const data = {
       _id: channelId,
       title: channelName,
@@ -130,9 +141,37 @@ const KOLEditScreen = ({ history, match }) => {
       },
       categories,
       status,
+      
     };
-    //console.log(data);
-    dispatch(updateChannel(data));
+
+    let formData = new FormData();
+  
+    
+   
+    formData.append("_id",channelId)
+    formData.append("title",channelName)
+    formData.append("area",area)
+    formData.append("intro",intro??"")
+    formData.append("note",note??"")
+
+    formData.append("socials",JSON.stringify({
+      youtube,
+      facebook,
+      instagram,
+      twitch,
+      tiktok,
+    }) )
+
+ 
+    formData.append("categories",categories)
+    formData.append("status",status)
+
+    //formData = data
+    console.log("avatarFile",avatarFile[0]);
+    formData.append("avatarFile", avatarFile[0])
+   
+    console.log(formData)
+    dispatch(updateChannel(formData));
   };
 
   if (successUpdate) {
@@ -183,14 +222,26 @@ const KOLEditScreen = ({ history, match }) => {
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group className="mb-4">
-              <Form.Label>相片</Form.Label>
-              <p>
-                <Image
-                  src={channel.thumbnails}
-                  roundedCircle
-                  style={{ width: "80px" }}
-                />
-              </p>
+              <Form.Label>頭像</Form.Label>  
+                <br />
+                <Avatar thumbnails={channel.thumbnails} />
+                <div className="mb-3">
+                  <Form.File id="formcheck-api-regular">
+                    <Form.File.Label>上傳頭像(1MB內)</Form.File.Label>
+                    <span className="text-danger ml-2 text-mute small">{errors.avatarFile}</span>
+                    <Form.File.Input accept="image/png, image/jpeg" 
+                    
+                      onChange={e => {
+                          setAvatarFile(e.target.files);
+                        }} />
+                  </Form.File>
+             
+                </div>
+                
+
+               
+               
+              
             </Form.Group>
             <Form.Group className="mb-4">
               <Form.Label>地區</Form.Label>

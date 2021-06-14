@@ -26,3 +26,4 @@ yarn-error.log*
 
 /backend/data
 /backend/cron
+/backend/uploads/avatar

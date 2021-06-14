@@ -32,6 +32,7 @@ import {
 import { socials as socialsConfig, areaConfig } from "./quotesConfig";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import Avatar from "../../components/Avatar";
 import QuoteCreateModal from "./QuoteCreateModal";
 import QuoteEditModal from "./QuoteEditModal";
 import TagManageModal from "./TagManageModal";
@@ -219,11 +220,7 @@ const KOLDetailPageScreen = ({ history, match }) => {
                     <Col xm={6}>
                       <div className="text-left">
                         <p>
-                          <Image
-                            src={channel.thumbnails}
-                            roundedCircle
-                            style={{ width: "80px" }}
-                          />
+                          <Avatar thumbnails={channel.thumbnails} />
                         </p>
                         <p>
                           <strong>頻道名稱</strong>{" "}

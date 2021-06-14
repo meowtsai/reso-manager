@@ -16,13 +16,14 @@ import {
   listTags,
   updateChannel,
 } from "../../actions/quotesActions";
-import Select from 'react-select'
+import TagsSelect from "../../components/TagsSelect";
 
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Paginate from "../../components/Paginate";
+import Avatar from "../../components/Avatar";
 import { socials, areaConfig } from "./quotesConfig";
 import React, { Fragment, useEffect, useState } from "react";
 const statusList = {
@@ -31,27 +32,7 @@ const statusList = {
 };
 
 
-const TagsSelect = ({tags,channels, onIdChange, currentId})=> {
-  let tmpList
-  //console.log(channels)
-  if (Array.isArray(tags) && Array.isArray(channels)) {
-    if (tags.length>0 && channels.length>0) {
-      tmpList = channels.filter(c=>c.tags.length>0).reduce( (prev, curr)=> ([...prev, ...curr.tags] ),[]);
-      //console.log("tmpList", tmpList)
 
-      const listItems = tags.map(t=> ({label:t.name, value:t._id, count: tmpList.filter(g=> g===t._id).length})).filter(c=> c.count!==0).sort((a,b)=> b.count- a.count).map(d =>({label:d.label + "("+d.count+")", value:d.value}))
-      return <Select defaultValue={listItems.filter(x=>x.value===currentId)[0]} onChange={(e)=>onIdChange(e.value) } options={listItems}  />
-    }
-    else 
-    {
-      return null
-    }
-    
-  }
-  else {
-    return null
-  }
-}
 const QuotesKOLHomeScreen = ({ history, match }) => {
   const tagId = match.params.tagid;
   const [searchKeyword, setSearchKeyWord] = useState("");
@@ -288,15 +269,7 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                       <tr key={channel._id}>
                         <td>
                           <Link to={`/quotes/kol/${channel._id}/view`}>
-                            {channel.thumbnails ? (
-                              <Image
-                                src={channel.thumbnails}
-                                roundedCircle
-                                style={{ width: "50px" }}
-                              />
-                            ) : (
-                              <i className="fas fa-user-alt img-placeholder"></i>
-                            )}
+                          <Avatar thumbnails={channel.thumbnails} />
 
                             <span className="ml-2">{channel.title}</span>
                           </Link>
@@ -325,11 +298,12 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
                             )}
                         </td>
                         <td>
+                          
                           {channel.categories.map(
                             (c) =>
                               serviceCategories.filter((s) => s.key === c)[0]
                                 .cht
-                          )}
+                          ).join(",")}
                         </td>
                         <td>
                           {channel.tags.map((t) => {

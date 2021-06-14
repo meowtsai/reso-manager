@@ -73,13 +73,15 @@ export const updateChannel = (channel) => async (dispatch, getState) => {
 
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
-    const { data } = await axios.put(
-      `/api/quotes/channel/${channel._id}`,
+    console.log("updateChannel", channel)
+
+    const { data } = await axios.post(
+      `/api/quotes/channel/${channel.get('_id')}`,
       channel,
       config
     );

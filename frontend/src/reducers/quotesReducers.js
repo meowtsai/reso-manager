@@ -327,6 +327,7 @@ export const pricingListReducer = (
         channels: action.payload.channels,
         quoteItems: action.payload.quoteItems,
         noxData: action.payload.noxData,
+        tags: action.payload.tags,
       };
     case PRICING_LIST_FAIL:
       return { loading: false, error: action.payload };

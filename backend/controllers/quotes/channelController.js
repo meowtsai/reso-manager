@@ -4,9 +4,11 @@ import Quote from "../../models/quotes/QuoteModel.js";
 import Permission from "../../models/permissionModel.js";
 import NoxTrackingChannel from "../../models/quotes/NoxTrackingChannelModel.js";
 import SocialData from "../../models/quotes/SocialDataModel.js";
-
+import setFilename from "../../utils/helper.js"
 import Tag from "../../models/quotes/TagModel.js";
-
+import path from "path"
+import dotenv from "dotenv";
+dotenv.config();
 // @desc    return a list of all channels
 // @route   GET /api/quotes/channel
 // @access  Private
@@ -89,19 +91,44 @@ const getChannelById = asyncHandler(async (req, res) => {
 });
 
 // @desc    Update channel
-// @route   PUT /api/quotes/:id
+// @route   POST /api/quotes/:id
 // @access  Private/Admin
 const updateChannel = asyncHandler(async (req, res) => {
   const channel = await Channel.findById(req.params.id);
+  //console.log(req.body)
+  
+  //console.log(" JSON.parse(channel.socials);", JSON.parse(JSON.stringify(channel.socials)) )
 
   if (channel) {
     channel.title = req.body.title ?? channel.title;
     channel.area = req.body.area ?? channel.area;
-    channel.categories = req.body.categories ?? channel.categories;
-    channel.socials = req.body.socials ?? channel.socials;
+    channel.categories =  req.body.categories.split(",").map(i=> parseInt(i)) ?? channel.categories;
+    channel.socials =JSON.parse( req.body.socials) ?? channel.socials;
     channel.intro = req.body.intro ?? channel.intro;
     channel.note = req.body.note ?? channel.note;
     channel.status = req.body.status ?? channel.status;
+
+    if (req.files) {
+     
+      if (Object.keys(req.files).length>0) {
+        Object.keys(req.files).forEach((key,index)=>{
+          //console.log("req.files",req.files[key])
+          const newFileName =  setFilename() + path.extname(req.files[key].name).toLowerCase();
+          //console.log("newFileName", newFileName)
+          req.files[key].mv(
+            `${process.env.AVATAR_DIR}/${newFileName}`,
+            (err) => {
+              console.log("files move error", err)
+              if (err)
+                return res.status(500).send({ avatarFile: err.message });
+            }
+          );
+
+          channel.thumbnails =`${process.env.AVATAR_PATH}/${newFileName}`
+        })
+        
+      }
+    }
 
     const updatedChannel = await channel.save();
 
@@ -114,6 +141,7 @@ const updateChannel = asyncHandler(async (req, res) => {
       intro: updatedChannel.intro,
       note: updatedChannel.note,
       status: updatedChannel.status,
+      thumbnails:updatedChannel.thumbnails
     });
   } else {
     res.status(404);
@@ -126,7 +154,7 @@ const updateChannel = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateChannelTags = asyncHandler(async (req, res) => {
   const { channelId, tags } = req.body;
-  console.log(req.body);
+  //console.log(req.body);
   const channel = await Channel.findById(channelId);
 
   if (channel) {
@@ -136,7 +164,7 @@ const updateChannelTags = asyncHandler(async (req, res) => {
         const tag = tags[i];
 
         const existedTag = await Tag.findOne({ name: tag });
-        console.log("existedTag", existedTag);
+       // console.log("existedTag", existedTag);
         if (existedTag) {
           tagList.push(existedTag._id);
         } else {

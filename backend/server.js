@@ -39,7 +39,6 @@ app.use(
     abortOnLimit: true,
     responseOnLimit: "檔案太大",
     limitHandler: function (req, res, next) {
-      //console.log("hi");
       return res.status(413).send({ file01: "檔案太大" });
     },
   })
@@ -56,7 +55,10 @@ app.use("/api/kol", kolRoutes);
 app.use("/api/quotes", quotesRoutes);
 
 const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+app.use("/uploads", express.static("backend/uploads/"));
+//app.use("/uploads", express.static("1client/public/uploads"1));
+
+
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/live")));

@@ -41,7 +41,7 @@ router.route("/channel").get(getChannels).post(createChannel);
 router
   .route("/channel/:id")
   .get(getChannelById)
-  .put(updateChannel)
+  .post(updateChannel)
   .delete(deleteChannel);
 
 router.route("/").get(getQuotes).post(createQuote);

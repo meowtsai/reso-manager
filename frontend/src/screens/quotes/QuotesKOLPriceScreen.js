@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table, Row, Col, Image, Form, Button } from "react-bootstrap";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import Avatar from "../../components/Avatar";
 import { getPricingData } from "../../actions/quotesActions";
 import { socials } from "./quotesConfig";
 import { Link } from "react-router-dom";
 import { CSVLink } from "react-csv";
+import TagsSelect from "../../components/TagsSelect";
 
 const QuotesKOLPriceScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -20,6 +22,8 @@ const QuotesKOLPriceScreen = ({ history }) => {
     key: "ytsubscriber",
     value: "desc",
   });
+
+  const [tagId,setTagId] =  useState("")
 
   const quoteCategories = [
     "直播",
@@ -38,6 +42,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
     quotes = [],
     quoteItems,
     noxData,
+    tags
   } = pricingList;
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -61,6 +66,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
           _id: item._id,
           title: item.title,
           thumbnails: item.thumbnails,
+          tags:item.tags
         };
 
         const quote = quotes.filter((q) => q._id.channel === item._id);
@@ -97,17 +103,30 @@ const QuotesKOLPriceScreen = ({ history }) => {
 
         list.push(record);
       }
+
+      
       // list = list.sort((a, b) =>
       //   sortByOption.value === "desc"
       //     ? b[sortByOption.key] - a[sortByOption.key]
       //     : a[sortByOption.key] - b[sortByOption.key]
       // );
     }
-
+    
     //  (sortByOption
 
+    if (tagId!==""){
+      list = list.filter(r => r.tags.indexOf(tagId)>-1);
+    }
+
     setRenderList(list);
-  }, [channels, sortByOption]);
+    
+  }, [channels, sortByOption,tagId]);
+
+  const tagChange=(id)=>{
+    setTagId(id)
+    
+
+  }
 
   const formatPrice = (quoteData, category, option = 1) => {
     const item = quoteItems.filter((qi) => qi._id === quoteData._id.item)[0];
@@ -178,6 +197,30 @@ const QuotesKOLPriceScreen = ({ history }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
+        <Row className="mb-2">
+            <Col>
+              <Form className="mb-3">
+                <Form.Row className="align-items-center">
+                  <Col xs="auto">
+                   
+                   
+                  </Col>
+                  <Col xs="auto">
+                   
+                  </Col>
+                </Form.Row>
+              </Form>
+            </Col>
+            
+            <Col>
+            <Row>
+              <Col xs={3} className="text-right">標籤</Col>
+              <Col xs={9}><TagsSelect tags={tags} channels={channels} onIdChange={(v)=>tagChange(v)} currentId={tagId} /></Col>
+            </Row>
+            
+            </Col>
+          </Row>
+
           <Row>
             <Col></Col>
             <Col>
@@ -298,15 +341,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
                             }
                           />
                           <Link to={`/quotes/kol/${channel._id}/view`}>
-                            {channel.thumbnails ? (
-                              <Image
-                                src={channel.thumbnails}
-                                roundedCircle
-                                style={{ width: "50px" }}
-                              />
-                            ) : (
-                              <i className="fas fa-user-alt img-placeholder"></i>
-                            )}
+                            <Avatar thumbnails={channel.thumbnails} />
 
                             <span className="ml-2 ">{channel.title}</span>
                           </Link>
