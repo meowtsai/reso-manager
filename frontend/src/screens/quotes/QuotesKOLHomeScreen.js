@@ -126,7 +126,13 @@ const QuotesKOLHomeScreen = ({ history, match }) => {
   };
 
   const tagChange=(id)=>{
-    history.push(`/quotes/kol/${id}/tag`);
+    if (id!=="")
+    {
+      history.push(`/quotes/kol/${id}/tag`);
+    }
+    else {
+      history.push(`/quotes/kol/list`);
+    }
   }
 
   const search = () => {
