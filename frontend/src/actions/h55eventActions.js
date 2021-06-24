@@ -1,5 +1,12 @@
 import axios from "axios";
 import {
+  H55CARD_LIST_FAIL,
+  H55CARD_LIST_SUCCESS,
+  H55CARD_LIST_REQUEST,
+  H55CARD_DELETE_REQUEST,
+  H55CARD_DELETE_SUCCESS,
+  H55CARD_DELETE_FAIL,
+
   H55TEAM_LIST_FAIL,
   H55TEAM_LIST_SUCCESS,
   H55TEAM_LIST_REQUEST,
@@ -21,6 +28,7 @@ import {
   SCORE_UPDATE_REQUEST,
   SCORE_UPDATE_SUCCESS,
   SCORE_UPDATE_FAIL,
+
 } from "../constants/h55eventConstants";
 import { logout } from "./userActions";
 
@@ -28,7 +36,7 @@ export const updateScoreById = (scoreData, action) => async (
   dispatch,
   getState
 ) => {
-  console.log("updateScoreById", action, scoreData);
+  //console.log("updateScoreById", action, scoreData);
   try {
     dispatch({
       type: SCORE_UPDATE_REQUEST,
@@ -305,6 +313,79 @@ export const deleteTeam = (id) => async (dispatch, getState) => {
     }
     dispatch({
       type: TEAM_DELETE_FAIL,
+      payload: message,
+    });
+  }
+};
+
+
+export const listCards = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: H55CARD_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/h55card/list`, config);
+
+    dispatch({
+      type: H55CARD_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: H55CARD_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+
+export const deleteCard = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: H55CARD_DELETE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/h55card/${id}`, config);
+
+    dispatch({ type: H55CARD_DELETE_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    dispatch({
+      type: H55CARD_DELETE_FAIL,
       payload: message,
     });
   }

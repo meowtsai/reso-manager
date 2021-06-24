@@ -12,6 +12,8 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import manageRoutes from "./routes/manageRoutes.js";
 import h55eventRoutes from "./routes/h55eventRoutes.js";
+import h55cardRoutes from "./routes/h55cardRoutes.js";
+
 import gameRoutes from "./routes/mentors/gameRoutes.js";
 import mentorRoutes from "./routes/mentors/mentorRoutes.js";
 
@@ -46,6 +48,7 @@ app.use(
 
 app.use("/api/users", userRoutes);
 app.use("/api/h55event", h55eventRoutes);
+app.use("/api/h55card", h55cardRoutes);
 app.use("/api/manage", manageRoutes);
 app.use("/api/mentors", gameRoutes, mentorRoutes);
 

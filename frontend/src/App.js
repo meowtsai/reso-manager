@@ -25,6 +25,9 @@ import H55CosplayListScreen from "./screens/H55CosplayListScreen";
 import H55CosplayReportScreen from "./screens/H55CosplayReportScreen";
 import H55CosplayJudgeScreen from "./screens/H55CosplayJudgeScreen";
 
+
+import H55CardScreen from "./screens/H55CardScreen";
+
 import KolListScreen from "./screens/KolListScreen";
 import SocialMediaListScreen from "./screens/quotes/SocialMediaListScreen";
 import SocialMediaCreateScreen from "./screens/quotes/SocialMediaCreateScreen";
@@ -58,6 +61,12 @@ const App = () => {
             path="/h55event/cosplayjudge"
             component={H55CosplayJudgeScreen}
           />
+          <Route
+            path="/h55card/home"
+            component={H55CardScreen}
+          />
+
+
 
           <Route path="/manage/role" component={RoleListScreen} exact />
           <Route path="/manage/role/create" component={RoleEditScreen} />

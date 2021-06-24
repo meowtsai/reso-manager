@@ -1,4 +1,11 @@
 import {
+  H55CARD_LIST_FAIL,
+  H55CARD_LIST_SUCCESS,
+  H55CARD_LIST_REQUEST,
+  H55CARD_DELETE_REQUEST,
+  H55CARD_DELETE_SUCCESS,
+  H55CARD_DELETE_FAIL,
+  H55CARD_LIST_RESET,
   H55TEAM_LIST_FAIL,
   H55TEAM_LIST_SUCCESS,
   H55TEAM_LIST_REQUEST,
@@ -132,6 +139,37 @@ export const cosplayListReducer = (
         error: action.payload,
         updateLoading: false,
       };
+    default:
+      return state;
+  }
+};
+
+
+export const cardListReducer = (
+  state = { cards: [] },
+  action
+) => {
+  switch (action.type) {
+    case H55CARD_LIST_REQUEST:
+      return { loading: true };
+    case H55CARD_LIST_SUCCESS:
+      return { loading: false, cards: action.payload };
+
+    case H55CARD_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    case H55CARD_LIST_RESET:
+      return { cards: [] };
+    case H55CARD_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    case H55CARD_DELETE_REQUEST:
+      return { ...state, loading: true };
+    case H55CARD_DELETE_SUCCESS:
+      return {
+        ...state,
+        cards: state.cards.filter((t) => t._id !== action.payload.deleted_id),
+        loading: false,
+      };
+
     default:
       return state;
   }

@@ -52,17 +52,15 @@ const Header = () => {
 
               {userInfo &&
                 (userInfo.isAdmin ||
-                  checkPermissions(userInfo.permissions, "cosplay", "read") ||
-                  checkPermissions(
-                    userInfo.permissions,
-                    "cosplay",
-                    "judge"
-                  )) && (
+                  checkPermissions(userInfo.permissions, "cosplay", "read")) && (
                   <NavDropdown
-                    title="第五Cosplay"
-                    id="cosplay"
+                    title="第五活動"
+                    id="h55event"
                     onClick={(e) => e.stopPropagation()}
                   >
+                    <LinkContainer to="/h55card/home">
+                      <NavDropdown.Item>三周年慶</NavDropdown.Item>
+                    </LinkContainer>
                     {(userInfo.isAdmin ||
                       checkPermissions(
                         userInfo.permissions,
@@ -72,6 +70,8 @@ const Header = () => {
                       <LinkContainer to="/h55event/cosplayreport">
                         <NavDropdown.Item>統計報表</NavDropdown.Item>
                       </LinkContainer>
+
+                      
                     )}
                     {(userInfo.isAdmin ||
                       checkPermissions(
@@ -87,6 +87,8 @@ const Header = () => {
                     <LinkContainer to="/h55event/cosplayjudge">
                       <NavDropdown.Item>評分列表</NavDropdown.Item>
                     </LinkContainer>
+
+                    
                   </NavDropdown>
                 )}
               {userInfo &&

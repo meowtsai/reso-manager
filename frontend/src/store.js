@@ -15,6 +15,7 @@ import {
   teamListReducer,
   matchListReducer,
   cosplayListReducer,
+  cardListReducer
 } from "./reducers/h55eventReducers";
 import {
   roleListReducer,
@@ -58,6 +59,7 @@ import {
 } from "./reducers/quotesReducers";
 
 const reducer = combineReducers({
+  cardList:cardListReducer,
   teamList: teamListReducer,
   matchList: matchListReducer,
   userLogin: userLoginReducer,
