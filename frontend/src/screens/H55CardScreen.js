@@ -31,9 +31,29 @@ const H55CardScreen = ({ history, match }) => {
         }
       }, [dispatch, history,userInfo]);
 
+      const deleteHandler = (nickname, id) => {
+        if (
+          window.confirm(
+            `你確定要刪除${nickname}的這筆紀錄嗎(辨識id: ${id.substring(
+              0,
+              6
+            )})這筆資料嗎, 沒有備分喔`
+          )
+        ) {
+          //console.log("delete ", id);
+          dispatch(deleteCard(id));
+        }
+      };
+
     return (
         <>
           <h1>第五人格三周年活動留言列表</h1>
+          <Row>
+            
+            <Col>
+              共 {cards.length} 筆資料
+            </Col>
+            </Row>
           <Row>
             <Col xs={12}>
             <Table striped bordered hover>
@@ -56,7 +76,15 @@ const H55CardScreen = ({ history, match }) => {
 
                 {cards.map(card => <tr>
                     <td>{card.nickname}</td>
-                    <td>{card.greetings}</td>
+                    <td>{card.greetings}
+                    <Button
+                          variant="danger"
+                          className="btn-sm mt-3 ml-1"
+                          onClick={() => deleteHandler(card.nickname, card._id)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </Button>
+                    </td>
                     <td>
                     <a href={card.imgUrl} target="_blank" rel="noopener noreferrer">
                                 圖片
