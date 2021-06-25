@@ -12,9 +12,12 @@ import {
     Toast,
   } from "react-bootstrap";
 import { listCards, deleteCard } from "../actions/h55eventActions";
+import Paginate from "../components/Paginate";
 
 const H55CardScreen = ({ history, match }) => {
-
+  const pageSize = 20;
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
     const dispatch = useDispatch();
 
     const cardList = useSelector((state) => state.cardList);
@@ -30,6 +33,16 @@ const H55CardScreen = ({ history, match }) => {
           history.push("/login");
         }
       }, [dispatch, history,userInfo]);
+
+      useEffect(() => {
+        const { cards } = cardList;
+    
+        if (cards && cards.length > 0) {
+          setPages(Math.ceil(cards.length / pageSize));
+    
+          
+        }
+      }, [cardList]);
 
       const deleteHandler = (nickname, id) => {
         if (
@@ -49,13 +62,25 @@ const H55CardScreen = ({ history, match }) => {
         <>
           <h1>第五人格三周年活動留言列表</h1>
           <Row>
+          <Col>
+              <Paginate pages={pages} page={page} setPage={(p) => setPage(p)} />
+            </Col>
             
             <Col>
-              共 {cards.length} 筆資料
+              共 {cards.length} 筆資料, 顯示 {(page - 1) * pageSize + 1}~{" "}
+              {(page - 1) * pageSize + pageSize < cards.length
+                ? (page - 1) * pageSize + pageSize
+                : cards.length}
+              筆
             </Col>
             </Row>
           <Row>
-            <Col xs={12}>
+          <Col xs={3}>
+            <h5>每日統計報表</h5>
+            <DialyStatistics list={cards} />
+          </Col>
+          <Col xs={9}>
+          
             <Table striped bordered hover>
                 <thead>
                   <tr>
@@ -74,7 +99,7 @@ const H55CardScreen = ({ history, match }) => {
                 </thead>
                 <tbody>
 
-                {cards.map(card => <tr>
+                {cards.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize).map(card => <tr>
                     <td>{card.nickname}</td>
                     <td>{card.greetings}
                     <Button
@@ -107,3 +132,53 @@ const H55CardScreen = ({ history, match }) => {
 };
 
 export default H55CardScreen;
+
+
+const DialyStatistics = ({ list }) => {
+  const alldate = [
+    ...new Set(
+      list.map((item) => DateTime.fromISO(item.createdAt).toLocaleString())
+    ),
+  ];
+
+  const finalData = alldate.map((d) => {
+    const dailyItems = list.filter(
+      (item) => DateTime.fromISO(item.createdAt).toLocaleString() === d
+    );
+    const count1 = dailyItems.reduce(
+      (prev, curr) => {
+         
+        return prev+1
+      },
+      0
+    );
+    return { d, c:count1 };
+  });
+
+  
+
+  //console.log("finalData", finalData);
+
+  //const statData = list.map((item) => item.category === "PG");
+  return (
+    <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th scope="col">日期</th>
+          <th scope="col">留言數</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        {finalData.map((data) => (
+          <tr>
+            <td>{data.d}</td>
+            <td>{data.c}</td>
+           
+          </tr>
+        ))}
+      </tbody>
+     
+    </Table>
+  );
+};
