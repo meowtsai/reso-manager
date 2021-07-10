@@ -361,7 +361,7 @@ const KOLDetailPageScreen = ({ history, match }) => {
                             <h6>平均觀看數</h6>
                             <small className="text-muted">
                               {" "}
-                              {channel.noxData.estViewsPerVideo}
+                              {channel.noxData.estimateViews}
                             </small>
                           </div>
                         </ListGroup.Item>

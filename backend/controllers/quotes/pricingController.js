@@ -21,7 +21,7 @@ const getDataForPricingPage = asyncHandler(async (req, res) => {
           channel: "$channel",
         },
         subscribers: { $last: "$subscribers" },
-        lastThirtyVideoViews: { $last: "$lastThirtyVideoViews" },
+        estimateViews: { $last: "$estimateViews" },
         date: { $last: "$createdAt" },
       },
     },

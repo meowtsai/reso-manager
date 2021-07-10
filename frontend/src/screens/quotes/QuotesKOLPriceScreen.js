@@ -171,7 +171,7 @@ const QuotesKOLPriceScreen = ({ history }) => {
     { label: "實況主", key: "title" },
     { label: "平台", key: "socials" },
     { label: "頻道訂閱數", key: "ytsubscriber" },
-    { label: "近30支平均觀看", key: "lastThirtyVideoViews" },
+    { label: "近30支平均觀看", key: "estimateViews" },
     { label: "直播", key: "item1" },
     { label: "貼文", key: "item2" },
     { label: "影片", key: "item3" },
@@ -292,14 +292,14 @@ const QuotesKOLPriceScreen = ({ history }) => {
                         variant="outline-primary"
                         onClick={(e) =>
                           setSortByOption({
-                            key: "lastThirtyVideoViews",
+                            key: "estimateViews",
                             value:
                               sortByOption.value === "asc" ? "desc" : "asc",
                           })
                         }
                       >
                         平均觀看
-                        {sortByOption.key === "lastThirtyVideoViews" ? (
+                        {sortByOption.key === "estimateViews" ? (
                           sortByOption.value === "asc" ? (
                             <i className="fas fa-sort-up ml-2"></i>
                           ) : (
